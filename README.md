@@ -18,8 +18,8 @@ Fineract client sdk is built on top of [Fineract client Kmp](https://github.com/
 
 1. Fineract SDK supports Multiple Platforms due to the KtorFit network library.
 2. It supports Coroutines and Flows with Suspend functions.
-3. Extend [`UserPreferences<USER>`](https://github.com/openMF/mifos-android-sdk-arch/blob/development/core/src/main/java/org/mifos/core/sharedpreference/UserPreferences.kt) and [`BasePreferenceManager`](https://github.com/openMF/mifos-android-sdk-arch/blob/development/core/src/main/java/org/mifos/core/sharedpreference/BasePreferenceManager.kt) classes for handling the preferences tasks.
-4. Single point of interaction for all the api services using [BaseApiManager](https://github.com/openMF/mifos-android-sdk-arch/blob/development/core/src/main/java/org/mifos/core/apimanager/BaseApiManager.kt).
+3. Extend [`UserPreferences<USER>`](https://github.com/openMF/fineract-client-kmp-sdk/blob/main/core/src/main/java/org/mifos/core/sharedpreference/UserPreferences.kt) and [`BasePreferenceManager`](https://github.com/openMF/fineract-client-kmp-sdk/blob/main/core/src/main/java/org/mifos/core/sharedpreference/BasePreferenceManager.kt) classes for handling the preferences tasks.
+4. Single point of interaction for all the api services using [BaseApiManager](https://github.com/openMF/fineract-client-kmp-sdk/blob/main/core/src/main/java/org/mifos/core/apimanager/BaseApiManager.kt).
 
 ## Quickstart Setup
 
@@ -31,14 +31,14 @@ Add dependency in the `build.gradle`.
 
   ```kts
     dependencies {
-        implementation("com.github.openMF:mifos-android-sdk-arch:$sdk_Version")
+        implementation("com.github.openMF:fineract-client-kmp-sdk:$sdk_Version")
     }
   ```
 
 - Groovy
   ```groovy
     dependencies {
-        implementation 'com.github.openMF:mifos-android-sdk-arch:$sdk_Version'
+        implementation 'com.github.openMF:fineract-client-kmp-sdk:$sdk_Version'
     }
   ```
 
@@ -107,7 +107,7 @@ Add this in your root `settings.gradle`.
 ## Architecture
 
 1. The core module in the SDK contains all the API requests written.
-2. The entry point to the library is the [BaseApiManager](https://github.com/openMF/mifos-android-sdk-arch/blob/development/core/src/main/java/org/mifos/core/apimanager/BaseApiManager.kt).
+2. The entry point to the library is the [BaseApiManager](https://github.com/openMF/fineract-client-kmp-sdk/blob/main/core/src/main/java/org/mifos/core/apimanager/BaseApiManager.kt).
 3. Use companion object's `getInstance()` function to get the instance of the implementation of `BaseApiManager`.
 4. For setting up the services, call `createService(username: String, password: String, baseUrl: String, tenant: String)` method of `BaseApiManager` providing valid credentials.
 
