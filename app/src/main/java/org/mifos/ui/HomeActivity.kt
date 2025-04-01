@@ -1,51 +1,36 @@
 package org.mifos.ui
 
-import android.os.Build
 import android.os.Bundle
-import android.widget.TextView
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import org.mifos.R
-import org.mifos.core.apimanager.BaseApiManager
-import org.mifos.core.apimanager.BaseUrl.Companion.API_ENDPOINT
-import org.mifos.core.apimanager.BaseUrl.Companion.API_PATH
-import org.mifos.core.apimanager.BaseUrl.Companion.PROTOCOL_HTTPS
-import org.mifos.utils.toast
-import org.openapitools.client.models.PostAuthenticationRequest
+import androidx.activity.ComponentActivity
+import androidx.compose.runtime.Composable
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
 
-class HomeActivity : AppCompatActivity() {
-
-    private val baseUrl = PROTOCOL_HTTPS + API_ENDPOINT + API_PATH
-    private val tenant = "default"
-    private lateinit var baseApiManager: BaseApiManager
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
-
-        baseApiManager = BaseApiManager.getInstance()
-        baseApiManager.createService("mifos", "password", baseUrl, tenant, false)
-
-        val req = PostAuthenticationRequest(username = "mifos", password = "password")
-
-        lifecycleScope.launch {
-            val response = baseApiManager.getAuthApi().authenticate(req, true)
-            setText(response.toString())
-            getClient()
+        setContent {
+            App("Hello World!")
         }
-    }
-
-    private fun getClient() {
-        lifecycleScope.launch {
-            val response = baseApiManager.getClientsApi().retrieveOne11(1, false)
-            this@HomeActivity.toast(response.toString())
-        }
-    }
-
-    private fun setText(text: String) {
-        findViewById<TextView>(R.id.text).text = text
     }
 }
+
+@Composable
+fun App(text: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            fontSize = 30.sp
+        )
+    }
+}
+
+
