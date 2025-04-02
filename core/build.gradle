@@ -74,7 +74,7 @@ dependencies {
     implementation ("com.github.openMF:fineract-client-cmp:0.0.1")
 
     // Add Ktorfit
-    implementation "de.jensklingenberg.ktorfit:ktorfit-lib:2.1.0"
+    implementation "de.jensklingenberg.ktorfit:ktorfit-lib:2.5.0"
 
     // Add Ktor dependencies
     implementation "io.ktor:ktor-client-core:2.3.12"

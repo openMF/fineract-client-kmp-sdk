@@ -80,7 +80,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.8.5"
 
     // Add Ktorfit
-    implementation "de.jensklingenberg.ktorfit:ktorfit-lib:2.1.0"
+    implementation "de.jensklingenberg.ktorfit:ktorfit-lib:2.5.0"
 
     // Add Ktor dependencies
     implementation "io.ktor:ktor-client-core:2.3.12"
