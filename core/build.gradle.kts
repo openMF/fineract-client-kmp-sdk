@@ -10,7 +10,7 @@ plugins {
 android {
     namespace = "org.mifos.core"
     compileSdk = 34
-    buildToolsVersion = "28.0.3"
+    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

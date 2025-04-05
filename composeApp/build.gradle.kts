@@ -71,10 +71,12 @@ kotlin {
 
     js {
         browser()
+
         binaries.executable()
     }
 
-    @OptIn(ExperimentalWasmDsl::class)
+
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         browser()
         binaries.executable()
