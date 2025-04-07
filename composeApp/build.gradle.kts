@@ -1,6 +1,6 @@
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 
 plugins {
@@ -106,6 +106,7 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
+            implementation(compose.runtime)
         }
 
 
@@ -165,6 +166,18 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
 
+}
+
+compose.desktop{
+    application{
+        mainClass = "MainKt"
+
+        nativeDistributions{
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "org.mifos"
+            packageVersion = "1.0.0"
+        }
+    }
 }
 
 
