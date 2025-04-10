@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import kotlinx.coroutines.CoroutineScope
+import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.mifos.core.apimanager.BaseApiManager
@@ -24,13 +24,13 @@ actual fun callApi(apiIdentifier: String): String {
     val baseApiManager = BaseApiManager.getInstance()
     baseApiManager.createService(username, password, baseUrl, tenant, false)
 
-    val responseData = remember { mutableStateOf(String()) }
+    val responseData = remember { mutableStateOf("Loading") }
 
 
     val req = PostAuthenticationRequest(username = username, password = password)
+    val coroutineScope = rememberCoroutineScope()
 
-
-    CoroutineScope(Dispatchers.IO).launch {
+    coroutineScope.launch(Dispatchers.IO) {
         responseData.value  = when (apiIdentifier) {
             "authApi" -> {
                 try {

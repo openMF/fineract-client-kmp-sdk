@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,7 +35,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mifos.callApi
 import org.mifos.utils.apiParametersValues
 
-//data class ApiData()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,8 +60,8 @@ fun HomeScreen() {
                 .padding(top = 125.dp)
         ) {
             LazyColumn() {
-                    items(apiParameters) { item ->
-                        ColumnDesign(item.apiName, item.apiDescription, item.apiIdentifier)
+                items(apiParameters) { item ->
+                    ColumnDesign(item.apiName, item.apiDescription, item.apiIdentifier)
                 }
             }
         }
@@ -73,8 +73,8 @@ fun HomeScreen() {
 @Preview
 @Composable
 fun ColumnDesign(apiName: String, apiDescription: String, apiIdentifier: String) {
-    val showMessage = remember{mutableStateOf(false)}
-    val responseData = remember{mutableStateOf(String())}
+    val showMessage = remember { mutableStateOf(false) }
+    val responseData = remember { mutableStateOf(String()) }
     Card(
         modifier = Modifier.fillMaxWidth(9.8f)
             .padding(3.dp),
@@ -85,7 +85,7 @@ fun ColumnDesign(apiName: String, apiDescription: String, apiIdentifier: String)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start,
@@ -151,12 +151,22 @@ fun ColumnDesign(apiName: String, apiDescription: String, apiIdentifier: String)
 
 @Composable
 fun responseBody(responseData: String) {
+
+    if(responseData == "Loading") {
+        Box(
+            modifier = Modifier.padding(bottom = 20.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
         Text(
-            modifier = Modifier.padding(top = 5.dp, bottom = 10.dp, ),
+            modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
             text = responseData,
             color = Color(0xFFbdbfbe),
             fontSize = 18.sp,
             fontWeight = FontWeight(400),
         )
+    }
 }
 
