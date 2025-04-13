@@ -1,6 +1,10 @@
 package org.mifos
 
-import androidx.compose.runtime.Composable
 
-@Composable
-expect fun callApi(apiIdentifier : String) : String
+expect class CallApi(){
+     suspend fun getAuthApi() : String
+     suspend fun getClient(): String
+     suspend fun getSavingApi(): String
+     suspend fun getCenterApi(): String
+     suspend fun getLoanApi(): String
+}

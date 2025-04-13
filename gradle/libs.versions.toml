@@ -7,8 +7,10 @@ converterGson = "2.11.0"
 compose-multiplatform = "1.7.3"
 espressoCore = "3.6.1"
 fineractClientCmp = "0.0.1"
+fineractClientKmp = "1.0.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
+koinAndroid = "4.0.1"
 kotlin = "2.1.10"
 kotlinStdlib = "2.1.10"
 kotlinxCoroutinesAndroid = "1.10.1"
@@ -17,6 +19,7 @@ ktorfitLib = "2.1.0"
 ktorSerializationKotlinxJson = "2.3.12"
 lifecycleExtensions = "2.2.0"
 lifecycleRuntimeKtx = "2.8.7"
+lifecycleViewmodelCompose = "2.8.3"
 okhttp = "4.12.0"
 preferenceKtx = "1.2.1"
 rxandroid = "1.2.1"
@@ -44,7 +47,9 @@ converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", versi
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
 fineract-client-cmp = { module = "com.github.openMF:fineract-client-cmp", version.ref = "fineractClientCmp" }
+fineract-client-kmp = { module = "com.github.openMF:fineract-client-kmp", version.ref = "fineractClientKmp" }
 junit = { module = "junit:junit", version.ref = "junit" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
@@ -58,6 +63,7 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfitLib" }
 lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }

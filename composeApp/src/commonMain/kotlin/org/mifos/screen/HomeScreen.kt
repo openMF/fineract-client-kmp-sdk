@@ -22,8 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,15 +35,18 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.mifos.callApi
+import org.mifos.CallApi
+import org.mifos.theme.indigoViolet
+import org.mifos.theme.lightGray
+import org.mifos.theme.mistGray
 import org.mifos.utils.apiParametersValues
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
-    val apiParameters = apiParametersValues()
+    val apiParameters = remember {apiParametersValues()}
     Scaffold(
         topBar = {
             TopAppBar(
@@ -49,7 +56,7 @@ fun HomeScreen() {
                         color = Color.White
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(Color(0xff6200ed))
+                colors = TopAppBarDefaults.topAppBarColors(indigoViolet)
             )
         },
         containerColor = Color.White
@@ -59,7 +66,7 @@ fun HomeScreen() {
             modifier = Modifier.fillMaxSize()
                 .padding(top = 125.dp)
         ) {
-            LazyColumn() {
+            LazyColumn(){
                 items(apiParameters) { item ->
                     ColumnDesign(item.apiName, item.apiDescription, item.apiIdentifier)
                 }
@@ -73,8 +80,11 @@ fun HomeScreen() {
 @Preview
 @Composable
 fun ColumnDesign(apiName: String, apiDescription: String, apiIdentifier: String) {
-    val showMessage = remember { mutableStateOf(false) }
-    val responseData = remember { mutableStateOf(String()) }
+    var showMessage by rememberSaveable(apiIdentifier){ mutableStateOf(false) }
+    var responseData by rememberSaveable(apiIdentifier){ mutableStateOf("Loading") }
+    val coroutineScope = rememberCoroutineScope()
+    val apiCaller = remember { CallApi() }
+
     Card(
         modifier = Modifier.fillMaxWidth(9.8f)
             .padding(3.dp),
@@ -120,9 +130,20 @@ fun ColumnDesign(apiName: String, apiDescription: String, apiIdentifier: String)
                             .size(width = 78.dp, height = 35.dp),
 
                         onClick = {
-                            showMessage.value = true
+                            showMessage = true
+                            coroutineScope.launch {
+                                responseData = when (apiIdentifier) {
+                                    "authApi" -> apiCaller.getAuthApi()
+                                    "clientApi" -> apiCaller.getClient()
+                                    "savingApi" -> apiCaller.getSavingApi()
+                                    "centerApi" -> apiCaller.getCenterApi()
+                                    "loanApi" -> apiCaller.getLoanApi()
+
+                                    else -> "Invalid API Request"
+                                }
+                            }
                         },
-                        colors = ButtonDefaults.buttonColors(Color(0xFFd5d7d6)),
+                        colors = ButtonDefaults.buttonColors(mistGray),
                         shape = RectangleShape,
                         contentPadding = PaddingValues(start = 5.dp, end = 5.dp)
                     ) {
@@ -140,9 +161,8 @@ fun ColumnDesign(apiName: String, apiDescription: String, apiIdentifier: String)
                     .padding(top = 5.dp, bottom = 5.dp),
                 contentAlignment = Alignment.Center
             ) {
-                if (showMessage.value) {
-                    responseData.value = callApi(apiIdentifier).toString()
-                    responseBody(responseData.value)
+                if (showMessage) {
+                    responseBody(responseData)
                 }
             }
         }
@@ -150,7 +170,7 @@ fun ColumnDesign(apiName: String, apiDescription: String, apiIdentifier: String)
 }
 
 @Composable
-fun responseBody(responseData: String) {
+fun responseBody(responseData: String)  {
 
     if(responseData == "Loading") {
         Box(
@@ -163,7 +183,7 @@ fun responseBody(responseData: String) {
         Text(
             modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
             text = responseData,
-            color = Color(0xFFbdbfbe),
+            color = lightGray,
             fontSize = 18.sp,
             fontWeight = FontWeight(400),
         )

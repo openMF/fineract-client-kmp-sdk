@@ -1,4 +1,3 @@
-
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
@@ -69,11 +68,11 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-//    js {
-//        browser()
-//
-//        binaries.executable()
-//    }
+    js {
+        browser()
+
+        binaries.executable()
+    }
 
 
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
@@ -90,6 +89,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.lifecycle.viewmodel.compose)
         }
 
         commonTest.dependencies {
@@ -110,7 +110,6 @@ kotlin {
         }
 
 
-
     }
 }
 
@@ -124,6 +123,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
+    // Koin for Android
+    implementation(libs.koin.android)
 
     // RecyclerView and CardView dependencies
     implementation(libs.cardview)
@@ -152,6 +153,7 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.compose)
 
     // Add Ktorfit
     implementation(libs.ktorfit.lib)
@@ -168,11 +170,11 @@ dependencies {
 
 }
 
-compose.desktop{
-    application{
+compose.desktop {
+    application {
         mainClass = "MainKt"
 
-        nativeDistributions{
+        nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "org.mifos"
             packageVersion = "1.0.0"
