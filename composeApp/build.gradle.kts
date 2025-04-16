@@ -1,6 +1,5 @@
-
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 
 plugins {
@@ -71,10 +70,12 @@ kotlin {
 
     js {
         browser()
+
         binaries.executable()
     }
 
-    @OptIn(ExperimentalWasmDsl::class)
+
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         browser()
         binaries.executable()
@@ -88,6 +89,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.lifecycle.viewmodel.compose)
         }
 
         commonTest.dependencies {
@@ -104,8 +106,8 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
+            implementation(compose.runtime)
         }
-
 
 
     }
@@ -121,6 +123,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
+    // Koin for Android
+    implementation(libs.koin.android)
 
     // RecyclerView and CardView dependencies
     implementation(libs.cardview)
@@ -149,6 +153,7 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.compose)
 
     // Add Ktorfit
     implementation(libs.ktorfit.lib)
@@ -163,6 +168,18 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
 
+}
+
+compose.desktop {
+    application {
+        mainClass = "MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "org.mifos"
+            packageVersion = "1.0.0"
+        }
+    }
 }
 
 
