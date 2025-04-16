@@ -1,9 +1,9 @@
 package org.mifos
 
 import androidx.compose.runtime.Composable
-import org.mifos.screen.HomeScreen
+import org.mifos.screen.apiCallScreen
 
 @Composable
 fun App() {
-    HomeScreen()
+    apiCallScreen()
 }

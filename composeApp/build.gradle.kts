@@ -1,5 +1,9 @@
+
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 
 plugins {
@@ -8,18 +12,17 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.composeMultiplatform)
-    id("de.jensklingenberg.ktorfit")
 }
 
 android {
     namespace = "org.mifos"
-    compileSdk = 34
+    compileSdk = 35
     buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "org.mifos"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -41,7 +44,7 @@ android {
         abortOnError = false
     }
 
-    packaging{
+    packaging {
         resources.excludes.add("META-INF/DEPENDENCIES")
     }
 
@@ -62,25 +65,53 @@ android {
 }
 kotlin {
     jvmToolchain(21)
-    jvm() // For JVM applications
-    androidTarget() // For Android
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
+    }
 
-    js {
-        browser()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
 
+    jvm()
+
+    js(IR) {
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeAppJs.js"
+                sourceMaps = true
+            }
+        }
         binaries.executable()
     }
 
-
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        outputModuleName = "composeApp"
+        browser {
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
+            commonWebpackConfig {
+                outputFileName = "composeAppWasmJs.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        add(rootDirPath)
+                        add(projectDirPath)
+                    }
+                }
+            }
+        }
         binaries.executable()
     }
-
 
     sourceSets {
         commonMain.dependencies {
@@ -90,6 +121,16 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.lifecycle.viewmodel.compose)
+            implementation(libs.lifecycleViewmodel)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.compose)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.niyajali.fineract.client.kmp)
+
+            implementation(project(":core"))
+
         }
 
         commonTest.dependencies {
@@ -102,84 +143,40 @@ kotlin {
             implementation(compose.uiTooling)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.ui.tooling.preview.android)
+            implementation(libs.koin.android)
         }
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(compose.runtime)
         }
-
-
     }
 }
 
 dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.appcompat)
+    implementation(libs.androidx.media3.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4.android)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-
-    // Koin for Android
-    implementation(libs.koin.android)
-
-    // RecyclerView and CardView dependencies
-    implementation(libs.cardview)
-
-    // rx Java dependencies
-    implementation(libs.rxandroid)
-    implementation(libs.rxjava)
-
-    // Lifecycle dependency
-    implementation(libs.lifecycle.extensions)
-
-    // Square dependencies
-    implementation("com.squareup.retrofit2:retrofit:2.9.0") {
-        exclude(module = "okhttp")
-    }
-    implementation(libs.converter.gson)
-    implementation(libs.converter.scalars)
-    implementation(libs.adapter.rxjava)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-
-    implementation(project(":core"))
-
-    // Fineract dependency
-    implementation(libs.fineract.client.cmp)
-
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.lifecycle.viewmodel.compose)
-
-    // Add Ktorfit
-    implementation(libs.ktorfit.lib)
-
-    // Add Ktor dependencies
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.auth)
-    implementation(libs.ktor.network.tls.certificates)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.kotlinx.serialization.json)
-
 }
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
-
+        mainClass = "org.mifos.MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
             packageName = "org.mifos"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
         }
     }
 }
 
+compose.resources {
+    publicResClass = true
+    generateResClass = always
+}
 
