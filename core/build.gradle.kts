@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
     id("maven-publish")
@@ -32,11 +32,31 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+}
 
-    kotlinOptions {
-        jvmTarget = "21"
+
+kotlin {
+    jvmToolchain(21)
+    jvm() // For JVM applications
+    androidTarget() // For Android
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    js {
+        browser()
+
+        binaries.executable()
+    }
+
+
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        binaries.executable()
     }
 }
+
 
 dependencies {
     implementation(libs.appcompat)
@@ -69,6 +89,8 @@ dependencies {
     // fineractClient dependency
     implementation(libs.fineract.client.cmp)
 
+    implementation(libs.niyajali.fineract.client.kmp)
+
     // Add Ktorfit
     implementation(libs.ktorfit.lib)
 
@@ -83,16 +105,16 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("release") {
-            groupId = "com.github.openMF"
-            artifactId = "mifos-android-sdk-arch"
-            version = "1.0.6"
-
-            afterEvaluate {
-                from(components["release"])
-            }
-        }
-    }
-}
+//publishing {
+//    publications {
+//        create<MavenPublication>("release") {
+//            groupId = "com.github.openMF"
+//            artifactId = "mifos-android-sdk-arch"
+//            version = "1.0.6"
+//
+//            afterEvaluate {
+//                from(components["release"])
+//            }
+//        }
+//    }
+//}
