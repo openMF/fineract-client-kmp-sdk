@@ -87,7 +87,7 @@ dependencies {
     implementation(libs.preference.ktx)
 
     // fineractClient dependency
-    implementation(libs.fineract.client.cmp)
+//    implementation(libs.fineract.client.cmp)
 
     implementation(libs.niyajali.fineract.client.kmp)
 

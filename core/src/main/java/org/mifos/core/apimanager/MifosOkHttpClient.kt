@@ -15,7 +15,7 @@ import javax.net.ssl.*
  *
  * OkHttpClient to disable SSL certificate validation in Retrofit
  */
-object MifosOkHttpClient {
+    object MifosOkHttpClient {
 
     val mifosOkHttpClient: OkHttpClient
         get() = try {

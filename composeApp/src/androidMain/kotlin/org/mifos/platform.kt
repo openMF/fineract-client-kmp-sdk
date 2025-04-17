@@ -5,7 +5,7 @@ import org.mifos.core.apimanager.BaseApiManager
 import org.mifos.core.apimanager.BaseUrl.Companion.API_ENDPOINT
 import org.mifos.core.apimanager.BaseUrl.Companion.API_PATH
 import org.mifos.core.apimanager.BaseUrl.Companion.PROTOCOL_HTTPS
-import org.openapitools.client.models.PostAuthenticationRequest
+import org.mifos.fineract.client.models.PostAuthenticationRequest
 
 
 actual class CallApi actual constructor() {
@@ -56,7 +56,7 @@ actual class CallApi actual constructor() {
             Log.d(tag, response.toString())
             response.toString()
         } catch (e: Exception) {
-            Log.e("$tag Error", e.stackTraceToString())
+            Log.e("$tag Error", Log.getStackTraceString(e))
             "Error: ${e.message}"
         }
     }

@@ -1,23 +1,25 @@
 package org.mifos.core.apimanager
 
-import org.openapitools.client.apis.AuditsApi
-import org.openapitools.client.apis.AuthenticationHTTPBasicApi
-import org.openapitools.client.apis.CentersApi
-import org.openapitools.client.apis.ChargesApi
-import org.openapitools.client.apis.ClientApi
-import org.openapitools.client.apis.DataTablesApi
-import org.openapitools.client.apis.DocumentsApi
-import org.openapitools.client.apis.GroupsApi
-import org.openapitools.client.apis.LoanReschedulingApi
-import org.openapitools.client.apis.LoansApi
-import org.openapitools.client.apis.NotesApi
-import org.openapitools.client.apis.OfficesApi
-import org.openapitools.client.apis.RunReportsApi
-import org.openapitools.client.apis.SavingsAccountApi
-import org.openapitools.client.apis.SearchAPIApi
-import org.openapitools.client.apis.SpmSurveysApi
-import org.openapitools.client.apis.StaffApi
-import org.openapitools.client.infrastructure.FineractClient
+import org.mifos.fineract.client.apis.AuditsApi
+import org.mifos.fineract.client.apis.AuthenticationHTTPBasicApi
+import org.mifos.fineract.client.apis.CentersApi
+import org.mifos.fineract.client.apis.ChargesApi
+import org.mifos.fineract.client.apis.ClientApi
+import org.mifos.fineract.client.apis.DataTablesApi
+import org.mifos.fineract.client.apis.DocumentsApi
+import org.mifos.fineract.client.apis.GroupsApi
+import org.mifos.fineract.client.apis.LoanReschedulingApi
+import org.mifos.fineract.client.apis.LoansApi
+import org.mifos.fineract.client.apis.NotesApi
+import org.mifos.fineract.client.apis.OfficesApi
+import org.mifos.fineract.client.apis.RunReportsApi
+import org.mifos.fineract.client.apis.SavingsAccountApi
+import org.mifos.fineract.client.apis.SearchAPIApi
+import org.mifos.fineract.client.apis.SpmSurveysApi
+import org.mifos.fineract.client.apis.StaffApi
+import org.mifos.fineract.client.infrastructure.FineractClient
+
+
 
 interface BaseApiManager {
 

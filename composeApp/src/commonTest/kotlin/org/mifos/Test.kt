@@ -9,7 +9,7 @@ class ComposeTest {
     @Test
     fun simpleCheck() = runComposeUiTest {
         setContent {
-            App("Hello World!")
+            App()
         }
 
 

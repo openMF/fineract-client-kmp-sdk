@@ -149,7 +149,9 @@ dependencies {
     implementation(project(":core"))
 
     // Fineract dependency
-    implementation(libs.fineract.client.cmp)
+//    implementation(libs.fineract.client.cmp)
+
+    implementation(libs.niyajali.fineract.client.kmp)
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.lifecycle.runtime.ktx)
