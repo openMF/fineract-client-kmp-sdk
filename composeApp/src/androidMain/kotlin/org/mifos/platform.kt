@@ -17,7 +17,7 @@ actual class CallApi actual constructor() {
         private const val PASSWORD = "password"
         val baseApiManager: BaseApiManager by lazy {
             BaseApiManager.getInstance().apply {
-                createService(USERNAME, PASSWORD, BASE_URL, TENANT, false)
+                createService(USERNAME, PASSWORD, BASE_URL, TENANT, true)
             }
         }
         val req = PostAuthenticationRequest(username = USERNAME, password = PASSWORD)

@@ -50,11 +50,6 @@ kotlin {
     }
 
 
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
 }
 
 
@@ -87,9 +82,8 @@ dependencies {
     implementation(libs.preference.ktx)
 
     // fineractClient dependency
-//    implementation(libs.fineract.client.cmp)
 
-    implementation(libs.niyajali.fineract.client.kmp)
+    implementation("io.github.niyajali:fineract-client-kmp:1.0.4")
 
     // Add Ktorfit
     implementation(libs.ktorfit.lib)
@@ -105,16 +99,3 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 }
 
-//publishing {
-//    publications {
-//        create<MavenPublication>("release") {
-//            groupId = "com.github.openMF"
-//            artifactId = "mifos-android-sdk-arch"
-//            version = "1.0.6"
-//
-//            afterEvaluate {
-//                from(components["release"])
-//            }
-//        }
-//    }
-//}
