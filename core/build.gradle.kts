@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "org.mifos.core"
-    compileSdk = 34
+    compileSdk = 35
     buildToolsVersion = "35.0.0"
 
     defaultConfig {
@@ -65,21 +65,9 @@ dependencies {
     // Kotlin standard library dependency
     implementation(libs.kotlin.stdlib)
 
-    // rxJava dependency
-    implementation(libs.rxjava)
 
-    // Square dependencies
-    implementation("com.squareup.retrofit2:retrofit:2.9.0") {
-        exclude(module = "okhttp")
-    }
     implementation(libs.converter.gson)
-    implementation(libs.converter.scalars)
-    implementation(libs.adapter.rxjava)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
 
-    // Shared Preferences dependency
-    implementation(libs.preference.ktx)
 
     // fineractClient dependency
 

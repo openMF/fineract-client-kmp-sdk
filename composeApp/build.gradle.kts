@@ -13,13 +13,13 @@ plugins {
 
 android {
     namespace = "org.mifos"
-    compileSdk = 34
+    compileSdk = 35
     buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "org.mifos"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -118,25 +118,8 @@ dependencies {
     // Koin for Android
     implementation(libs.koin.android)
 
-    // RecyclerView and CardView dependencies
-    implementation(libs.cardview)
-
-    // rx Java dependencies
-    implementation(libs.rxandroid)
-    implementation(libs.rxjava)
-
-    // Lifecycle dependency
-    implementation(libs.lifecycle.extensions)
-
-    // Square dependencies
-    implementation("com.squareup.retrofit2:retrofit:2.9.0") {
-        exclude(module = "okhttp")
-    }
     implementation(libs.converter.gson)
-    implementation(libs.converter.scalars)
-    implementation(libs.adapter.rxjava)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
+
 
     implementation(project(":core"))
 
