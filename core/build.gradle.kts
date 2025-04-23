@@ -1,15 +1,14 @@
 plugins {
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlin.serialization)
-    id("kotlin-kapt")
     id("maven-publish")
     id("de.jensklingenberg.ktorfit")
 }
 
 android {
     namespace = "org.mifos.core"
-    compileSdk = 34
+    compileSdk = 35
     buildToolsVersion = "35.0.0"
 
     defaultConfig {
@@ -32,11 +31,24 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-
-    kotlinOptions {
-        jvmTarget = "21"
-    }
 }
+
+
+kotlin {
+    jvmToolchain(21)
+    jvm() // For JVM applications
+    androidTarget() // For Android
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    js {
+        browser()
+        binaries.executable()
+    }
+
+}
+
 
 dependencies {
     implementation(libs.appcompat)
@@ -50,49 +62,11 @@ dependencies {
     // Kotlin standard library dependency
     implementation(libs.kotlin.stdlib)
 
-    // rxJava dependency
-    implementation(libs.rxjava)
 
-    // Square dependencies
-    implementation("com.squareup.retrofit2:retrofit:2.9.0") {
-        exclude(module = "okhttp")
-    }
     implementation(libs.converter.gson)
-    implementation(libs.converter.scalars)
-    implementation(libs.adapter.rxjava)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
 
-    // Shared Preferences dependency
-    implementation(libs.preference.ktx)
 
     // fineractClient dependency
     implementation(libs.fineract.client.cmp)
-
-    // Add Ktorfit
-    implementation(libs.ktorfit.lib)
-
-    // Add Ktor dependencies
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.auth)
-    implementation(libs.ktor.network.tls.certificates)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.kotlinx.serialization.json)
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("release") {
-            groupId = "com.github.openMF"
-            artifactId = "mifos-android-sdk-arch"
-            version = "1.0.6"
-
-            afterEvaluate {
-                from(components["release"])
-            }
-        }
-    }
-}
