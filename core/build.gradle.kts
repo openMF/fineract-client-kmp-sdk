@@ -71,7 +71,8 @@ dependencies {
 
     // fineractClient dependency
 
-    implementation("io.github.niyajali:fineract-client-kmp:1.0.4")
+//    implementation(libs.fineract.client.kmp)
+    implementation(libs.niyajali.fineract.client.kmp)
 
     // Add Ktorfit
     implementation(libs.ktorfit.lib)

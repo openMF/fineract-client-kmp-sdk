@@ -124,7 +124,7 @@ dependencies {
     implementation(project(":core"))
 
     // Fineract dependency
-//    implementation(libs.fineract.client.cmp)
+//    implementation(libs.fineract.client.kmp)
 
     implementation(libs.niyajali.fineract.client.kmp)
 
