@@ -1,5 +1,6 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 
 plugins {
@@ -68,10 +69,16 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    js {
-        browser()
 
+    js(IR){
+        nodejs()
         binaries.executable()
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        nodejs()
+        browser()
     }
 
     sourceSets {
@@ -114,37 +121,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4.android)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
-    // Koin for Android
-    implementation(libs.koin.android)
-
-    implementation(libs.converter.gson)
-
-
     implementation(project(":core"))
 
-    // Fineract dependency
-//    implementation(libs.fineract.client.kmp)
-
     implementation(libs.niyajali.fineract.client.kmp)
-
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.lifecycle.viewmodel.compose)
-
-    // Add Ktorfit
-    implementation(libs.ktorfit.lib)
-
-    // Add Ktor dependencies
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.auth)
-    implementation(libs.ktor.network.tls.certificates)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.kotlinx.serialization.json)
-
 }
 
 compose.desktop {

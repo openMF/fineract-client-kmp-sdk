@@ -1,8 +1,9 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlin.serialization)
-    id("kotlin-kapt")
     id("maven-publish")
     id("de.jensklingenberg.ktorfit")
 }
@@ -43,10 +44,15 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    js {
-        browser()
-
+    js(IR){
+        nodejs()
         binaries.executable()
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        nodejs()
+        browser()
     }
 
 
@@ -70,21 +76,5 @@ dependencies {
 
 
     // fineractClient dependency
-
-//    implementation(libs.fineract.client.kmp)
     implementation(libs.niyajali.fineract.client.kmp)
-
-    // Add Ktorfit
-    implementation(libs.ktorfit.lib)
-
-    // Add Ktor dependencies
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.auth)
-    implementation(libs.ktor.network.tls.certificates)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.kotlinx.serialization.json)
 }
-

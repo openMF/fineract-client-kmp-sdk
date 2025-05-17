@@ -39,9 +39,7 @@ class BaseApiManagerImpl : BaseApiManager {
         val builder = FineractClient.builder()
             .baseURL(baseUrl)
             .basicAuth(username, password)
-            .inSecure(!secured)
             .tenant(tenant)
-
         client = builder.build()
     }
 
