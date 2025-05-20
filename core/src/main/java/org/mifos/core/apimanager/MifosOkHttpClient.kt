@@ -1,58 +1,68 @@
-package org.mifos.core.apimanager
 
 import android.annotation.SuppressLint
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
-import java.util.concurrent.TimeUnit
-import javax.net.ssl.*
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
+class HttpsTrustManager : X509TrustManager {
+    @SuppressLint("TrustAllX509TrustManager")
+    @Throws(CertificateException::class)
+    override fun checkClientTrusted(
+        x509Certificates: Array<X509Certificate>, s: String
+    ) {
+    }
 
-/**
- * Created by grandolf49 on 18-06-2020
- *
- * OkHttpClient to disable SSL certificate validation in Retrofit
- */
-object MifosOkHttpClient {
+    @SuppressLint("TrustAllX509TrustManager")
+    @Throws(CertificateException::class)
+    override fun checkServerTrusted(
+        x509Certificates: Array<X509Certificate>, s: String
+    ) {
+    }
 
-    val mifosOkHttpClient: OkHttpClient
-        get() = try {
-            val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-                @SuppressLint("TrustAllX509TrustManager")
-                @Throws(CertificateException::class)
-                override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
-                }
+    fun isClientTrusted(chain: Array<X509Certificate?>?): Boolean {
+        return true
+    }
 
-                @SuppressLint("TrustAllX509TrustManager")
-                @Throws(CertificateException::class)
-                override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
-                }
+    fun isServerTrusted(chain: Array<X509Certificate?>?): Boolean {
+        return true
+    }
 
-                override fun getAcceptedIssuers(): Array<X509Certificate> {
-                    return arrayOf()
-                }
-            })
-            val sslContext = SSLContext.getInstance("SSL")
-            sslContext.init(null, trustAllCerts, SecureRandom())
-            val builder = OkHttpClient.Builder()
+    override fun getAcceptedIssuers(): Array<X509Certificate> {
+        return _AcceptedIssuers
+    }
 
-            builder.sslSocketFactory(sslContext.socketFactory,trustAllCerts[0] as X509TrustManager)
-            builder.hostnameVerifier(HostnameVerifier { _, _ -> true })
+    companion object {
+        private var trustManagers: Array<TrustManager>? = null
+        private val _AcceptedIssuers: Array<X509Certificate> = arrayOf<X509Certificate>()
 
-            //Enable Full Body Logging
-            val logger = HttpLoggingInterceptor()
-            logger.setLevel(HttpLoggingInterceptor.Level.BODY)
+        fun allowAllSSL() {
+            HttpsURLConnection.setDefaultHostnameVerifier { arg0, arg1 -> true }
 
-            //Setting Timeout 30 Seconds
-            builder.connectTimeout(60, TimeUnit.SECONDS)
-            builder.readTimeout(60, TimeUnit.SECONDS)
+            var context: SSLContext? = null
+            if (trustManagers == null) {
+                trustManagers = arrayOf(HttpsTrustManager())
+            }
 
-            //Interceptor :> Full Body Logger and ApiRequest Header
-            builder.addInterceptor(logger)
-            builder.build()
-        } catch (e: Exception) {
-            throw RuntimeException(e)
+            try {
+                context = SSLContext.getInstance("TLS")
+                context.init(null, trustManagers, SecureRandom())
+            } catch (e: NoSuchAlgorithmException) {
+                e.printStackTrace()
+            } catch (e: KeyManagementException) {
+                e.printStackTrace()
+            }
+
+            if (context != null) {
+                HttpsURLConnection.setDefaultSSLSocketFactory(
+                    context.socketFactory
+                )
+            }
         }
+    }
 }

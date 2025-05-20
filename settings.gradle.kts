@@ -1,3 +1,4 @@
+include(":fineract-client-kmp-main")
 
 
 pluginManagement {

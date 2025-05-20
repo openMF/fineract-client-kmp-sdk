@@ -6,9 +6,9 @@ plugins {
     alias(libs.plugins.androidLibrary).apply(false)
     alias(libs.plugins.kotlinMultiplatform).apply(false)
     alias(libs.plugins.composeMultiplatform).apply(false)
-
-
-    id("de.jensklingenberg.ktorfit") version "2.1.0" apply false
+    alias(libs.plugins.kover) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.dokka)
 
 }
 
