@@ -72,10 +72,9 @@ dependencies {
 
 
     implementation(libs.converter.gson)
+    implementation(project(":fineract_client"))
 
 
     // fineractClient dependency
 //    implementation(libs.niyajali.fineract.client.kmp)
-
-    implementation(project(":fineract-client"))
 }

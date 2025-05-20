@@ -121,7 +121,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(project(":core"))
-    implementation(project(":fineract-client"))
+    implementation(project(":fineract_client"))
 
 //    implementation(libs.niyajali.fineract.client.kmp)
 }
