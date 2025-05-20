@@ -75,7 +75,6 @@ dependencies {
 
 
     // fineractClient dependency
-//    implementation(libs.niyajali.fineract.client.kmp)
+    implementation(libs.niyajali.fineract.client.kmp)
 
-    implementation(project(":fineract-client"))
 }

@@ -30,4 +30,3 @@ dependencyResolutionManagement {
 rootProject.name= "Fineract-sdk-cmp"
 include (":composeApp")
 include (":core")
-include(":fineract-client")
