@@ -40,6 +40,7 @@ class BaseApiManagerImpl : BaseApiManager {
             .baseURL(baseUrl)
             .basicAuth(username, password)
             .tenant(tenant)
+            .inSecure(secured)
         client = builder.build()
     }
 

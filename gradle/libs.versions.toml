@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.0"
+agp = "8.9.3"
 adapterRxjava = "2.9.0"
 appcompat = "1.7.0"
 cardview = "1.0.0"
@@ -12,32 +12,47 @@ fineractClientKmpVersion = "1.0.5"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 koinAndroid = "4.0.1"
-kotlin = "2.1.10"
-kotlinStdlib = "2.1.10"
-kotlinxCoroutinesAndroid = "1.10.1"
-kotlinxSerializationJson = "1.7.3"
-ktorfitLib = "2.1.0"
-ktorSerializationKotlinxJson = "2.3.12"
+kotlin = "2.1.20"
+kotlinStdlib = "2.1.20"
+kotlinxCoroutinesAndroid = "1.10.2"
+kotlinxSerializationJson = "1.8.1"
+ktorClientOkhttp = "3.1.2"
+ktorfitLib = "2.5.1"
+ktorSerializationKotlinxJson = "3.1.3"
 lifecycleExtensions = "2.2.0"
-lifecycleRuntimeKtx = "2.8.7"
+lifecycleRuntimeKtx = "2.9.0"
 lifecycleViewmodelCompose = "2.8.3"
 okhttp = "4.12.0"
 preferenceKtx = "1.2.1"
 rxandroid = "1.2.1"
 rxjava = "1.3.8"
 truth = "1.4.4"
-androidx-activityCompose = "1.8.0"
-compose = "1.5.4"
-compose-material3 = "1.1.2"
-material3Android = "1.3.1"
+androidx-activityCompose = "1.10.1"
+compose = "1.8.1"
+compose-material3 = "1.3.2"
+material3Android = "1.3.2"
 ui = "1.0.0"
-uiToolingPreviewAndroid = "1.7.8"
+uiToolingPreviewAndroid = "1.8.1"
 hotReload = "1.0.0-alpha03"
+kover = "0.9.1"
+dokka = "1.9.20"
+ksp = "2.1.21-2.0.1"
+ktorfit = "2.5.1"
+kotlinxDatetime = "0.6.2"
+ktor = '3.1.3'
+
 
 
 
 
 [libraries]
+
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientOkhttp" }
+ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
+ktorfit-converters-flow = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-converters-flow", version.ref = "ktorfit" }
+ktorfit-converters-call = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-converters-call", version.ref = "ktorfit" }
 adapter-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava", version.ref = "adapterRxjava" }
 androidx-ui-test-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "uiToolingPreviewAndroid" }
 androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiToolingPreviewAndroid" }
@@ -80,7 +95,7 @@ compose-foundation = { module = "androidx.compose.foundation:foundation", versio
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
-
+ktorfit-ksp = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-ksp", version.ref = "ktorfit" }
 
 
 [plugins]
@@ -91,4 +106,8 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+kover = { id = 'org.jetbrains.kotlinx.kover', version.ref = 'kover' }
+dokka = { id = 'org.jetbrains.dokka', version.ref = 'dokka' }
 hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotReload" }
+ksp = { id = 'com.google.devtools.ksp', version.ref = 'ksp' }
+ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }

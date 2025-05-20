@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.composeMultiplatform)
-    id("de.jensklingenberg.ktorfit")
 }
 
 android {
@@ -122,8 +121,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(project(":core"))
+    implementation(project(":fineract-client"))
 
-    implementation(libs.niyajali.fineract.client.kmp)
+//    implementation(libs.niyajali.fineract.client.kmp)
 }
 
 compose.desktop {

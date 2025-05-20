@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
-    id("de.jensklingenberg.ktorfit")
 }
 
 android {
@@ -76,5 +75,7 @@ dependencies {
 
 
     // fineractClient dependency
-    implementation(libs.niyajali.fineract.client.kmp)
+//    implementation(libs.niyajali.fineract.client.kmp)
+
+    implementation(project(":fineract-client"))
 }
