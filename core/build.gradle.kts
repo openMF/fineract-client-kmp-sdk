@@ -50,8 +50,18 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        nodejs()
+//        nodejs {
+//            testTask {
+//                enabled = false
+//            }
+//        }
         browser()
+    }
+
+    sourceSets{
+        commonMain.dependencies {
+            implementation(project(":fineract-client"))
+        }
     }
 
 
@@ -72,7 +82,7 @@ dependencies {
 
 
     implementation(libs.converter.gson)
-    implementation(project(":fineract_client"))
+    implementation(project(":fineract-client"))
 
 
     // fineractClient dependency

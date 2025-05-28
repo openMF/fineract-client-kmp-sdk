@@ -3,13 +3,11 @@ package org.mifos
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
 import kotlinx.browser.document
-import org.jetbrains.skiko.wasm.onWasmReady
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    onWasmReady {
-        ComposeViewport(document.body!!) {
-            App() // Render the root composable of the application.
-        }
+    ComposeViewport(document.body!!) {
+
+        App()
     }
 }

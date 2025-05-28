@@ -1,6 +1,8 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 
 plugins {
@@ -41,7 +43,7 @@ android {
         abortOnError = false
     }
 
-    packaging{
+    packaging {
         resources.excludes.add("META-INF/DEPENDENCIES")
     }
 
@@ -62,22 +64,53 @@ android {
 }
 kotlin {
     jvmToolchain(21)
-    jvm() // For JVM applications
-    androidTarget() // For Android
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
+    }
 
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
 
-    js(IR){
-        nodejs()
+    jvm()
+
+    js(IR) {
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeAppJs.js"
+                sourceMaps = true
+            }
+        }
         binaries.executable()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        nodejs()
-        browser()
+        outputModuleName = "composeApp"
+        browser {
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
+            commonWebpackConfig {
+                outputFileName = "composeAppWasmJs.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(rootDirPath)
+                        add(projectDirPath)
+                    }
+                }
+            }
+        }
+        binaries.executable()
     }
 
     sourceSets {
@@ -88,6 +121,10 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.lifecycle.viewmodel.compose)
+            implementation(libs.lifecycleViewmodel)
+            implementation(project(":fineract-client"))
+            implementation(project(":core"))
+
         }
 
         commonTest.dependencies {
@@ -106,36 +143,28 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(compose.runtime)
         }
-
-
     }
 }
 
 dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.appcompat)
+    implementation(libs.androidx.media3.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4.android)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation(project(":core"))
-    implementation(project(":fineract_client"))
-
-//    implementation(libs.niyajali.fineract.client.kmp)
 }
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
-
+        mainClass = "org.mifos.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "org.mifos"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
         }
     }
 }
-
 
