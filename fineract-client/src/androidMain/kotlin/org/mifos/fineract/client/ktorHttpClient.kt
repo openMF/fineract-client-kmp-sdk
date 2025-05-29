@@ -1,8 +1,7 @@
 package org.mifos.fineract.client
 
-import android.annotation.SuppressLint
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
@@ -17,13 +16,6 @@ import io.ktor.http.contentType
 import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import java.security.KeyManagementException
-import java.security.NoSuchAlgorithmException
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 actual fun ktorHttpClient(
     loginUsername: String?,
@@ -31,7 +23,7 @@ actual fun ktorHttpClient(
     tenant: String?,
     insecure: Boolean
 ): HttpClient {
-    val ktorClient = HttpClient(CIO) {
+    val ktorClient = HttpClient(OkHttp) {
         install(ContentNegotiation) {
             json(
                 Json {
@@ -67,45 +59,45 @@ actual fun ktorHttpClient(
             }
         }
 
-        if (insecure) {
-            engine {
-                https {
-                    val insecureTrustManager = object : X509TrustManager {
-                        @SuppressLint("TrustAllX509TrustManager")
-                        override fun checkClientTrusted(
-                            chain: Array<X509Certificate>,
-                            authType: String
-                        ) {
-                        }
-
-                        @SuppressLint("TrustAllX509TrustManager")
-                        override fun checkServerTrusted(
-                            chain: Array<X509Certificate>,
-                            authType: String
-                        ) {
-                        }
-
-                        override fun getAcceptedIssuers(): Array<X509Certificate> =
-                            arrayOf()
-                    }
-
-                    try {
-                        SSLContext.getInstance("SSL").apply {
-                            init(
-                                null,
-                                arrayOf<TrustManager>(insecureTrustManager),
-                                SecureRandom()
-                            )
-                        }
-                        trustManager = insecureTrustManager
-                    } catch (e: NoSuchAlgorithmException) {
-                        throw IllegalStateException("SSL configuration failed", e)
-                    } catch (e: KeyManagementException) {
-                        throw IllegalStateException("SSL configuration failed", e)
-                    }
-                }
-            }
-        }
+//        if (insecure) {
+//            engine {
+//                https {
+//                    val insecureTrustManager = object : X509TrustManager {
+//                        @SuppressLint("TrustAllX509TrustManager")
+//                        override fun checkClientTrusted(
+//                            chain: Array<X509Certificate>,
+//                            authType: String
+//                        ) {
+//                        }
+//
+//                        @SuppressLint("TrustAllX509TrustManager")
+//                        override fun checkServerTrusted(
+//                            chain: Array<X509Certificate>,
+//                            authType: String
+//                        ) {
+//                        }
+//
+//                        override fun getAcceptedIssuers(): Array<X509Certificate> =
+//                            arrayOf()
+//                    }
+//
+//                    try {
+//                        SSLContext.getInstance("SSL").apply {
+//                            init(
+//                                null,
+//                                arrayOf<TrustManager>(insecureTrustManager),
+//                                SecureRandom()
+//                            )
+//                        }
+//                        trustManager = insecureTrustManager
+//                    } catch (e: NoSuchAlgorithmException) {
+//                        throw IllegalStateException("SSL configuration failed", e)
+//                    } catch (e: KeyManagementException) {
+//                        throw IllegalStateException("SSL configuration failed", e)
+//                    }
+//                }
+//            }
+//        }
     }
 
     return ktorClient
