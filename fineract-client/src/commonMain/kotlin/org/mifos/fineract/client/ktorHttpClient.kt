@@ -20,12 +20,12 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-expect fun ktorHttpClient(
-    loginUsername: String?,
-    loginPassword: String?,
-    tenant: String?,
-    insecure: Boolean
-) : HttpClient
+//expect fun ktorHttpClient(
+//    loginUsername: String?,
+//    loginPassword: String?,
+//    tenant: String?,
+//    insecure: Boolean
+//) : HttpClient
 //expect fun ktorHttpClient(config: HttpClientConfig<*>.() -> Unit): HttpClient
 //
 //
