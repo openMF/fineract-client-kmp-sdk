@@ -11,5 +11,9 @@ class BaseUrl {
         const val API_ENDPOINT = "dev.mifos.io"
         const val API_PATH = "/fineract-provider/api/"
         const val PORT = "80"
+
+//        const val API_ENDPOINT = "tt.mifos.community"
+//        const val API_PATH = "/fineract-provider/api/"
+//        const val PROTOCOL_HTTPS = "https://"
     }
 }

@@ -11,22 +11,6 @@ package org.mifos.fineract.client.infrastructure
 
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
-import io.ktor.client.plugins.auth.providers.basic
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.logging.DEFAULT
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.header
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.http.headers
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.utils.io.core.toByteArray
-import kotlinx.serialization.json.Json
 import org.mifos.fineract.client.apis.createAccountNumberFormatApi
 import org.mifos.fineract.client.apis.createAccountTransfersApi
 import org.mifos.fineract.client.apis.createAccountingClosureApi
@@ -171,7 +155,7 @@ import org.mifos.fineract.client.apis.createTwoFactorApi
 import org.mifos.fineract.client.apis.createUserGeneratedDocumentsApi
 import org.mifos.fineract.client.apis.createUsersApi
 import org.mifos.fineract.client.apis.createWorkingDaysApi
-import kotlin.io.encoding.Base64
+import org.mifos.fineract.client.ktorHttpClient
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
@@ -390,50 +374,8 @@ class FineractClient private constructor(
         @OptIn(ExperimentalEncodingApi::class)
         fun build(): FineractClient {
 
-            val ktorClient = HttpClient() {
-                install(ContentNegotiation) {
-                    json(
-                        Json {
-                            isLenient = true
-                            ignoreUnknownKeys = true
-                        },
-                    )
-                }
 
-                install(Logging) {
-                    logger = Logger.DEFAULT
-                    level = LogLevel.INFO
-                }
-
-                if (listOf(loginUsername, loginPassword).all { it != null }) {
-                    install(Auth) {
-                        basic {
-                            credentials {
-                                BasicAuthCredentials(
-                                    username = loginUsername.toString(),
-                                    password = loginPassword.toString(),
-                                )
-                            }
-                        }
-                    }
-                }
-
-                val credentials = "$loginUsername:$loginPassword"
-                val encoded = Base64.encode(credentials.toByteArray())
-
-                defaultRequest {
-                    header("Authorization", "Basic $encoded")
-                    contentType(ContentType.Application.Json)
-                    headers {
-                        append("Accept", "application/json")
-                        tenant?.let {
-                            append("fineract-platform-tenantid", it)
-                        }
-                    }
-                }
-            }
-
-
+            val ktorClient = ktorHttpClient(loginUsername, loginPassword, tenant, insecure)
             val ktorfitBuilder = Ktorfit.Builder()
                 .httpClient(ktorClient)
                 .baseUrl(baseURL)
