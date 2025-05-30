@@ -92,33 +92,13 @@ kotlin {
             implementation(libs.ktorfit.lib)
             implementation(libs.ktorfit.converters.call)
             implementation(libs.ktorfit.converters.flow)
-            implementation(libs.ktor.client.cio)
-            implementation(libs.ktor.client.js)
-        }
-
-        androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-
-        jvmMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-
-        nativeMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
-
-        wasmJsMain.dependencies {
-            implementation(libs.ktor.client.js)
-        }
-
-        jsMain.dependencies {
-            implementation(libs.ktor.client.js)
         }
     }
 }
 
 dependencies {
+    implementation(libs.androidx.ui.android)
+    implementation(libs.firebase.crashlytics.buildtools)
     add("kspCommonMainMetadata", libs.ktorfit.ksp)
     add("kspJvm", libs.ktorfit.ksp)
     add("kspIosX64", libs.ktorfit.ksp)

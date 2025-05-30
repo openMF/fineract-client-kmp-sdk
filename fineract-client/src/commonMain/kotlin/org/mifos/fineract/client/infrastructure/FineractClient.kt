@@ -20,12 +20,10 @@ import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.header
+import io.ktor.client.request.headers
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.utils.io.core.toByteArray
 import kotlinx.serialization.json.Json
 import org.mifos.fineract.client.apis.createAccountNumberFormatApi
 import org.mifos.fineract.client.apis.createAccountTransfersApi
@@ -171,8 +169,6 @@ import org.mifos.fineract.client.apis.createTwoFactorApi
 import org.mifos.fineract.client.apis.createUserGeneratedDocumentsApi
 import org.mifos.fineract.client.apis.createUsersApi
 import org.mifos.fineract.client.apis.createWorkingDaysApi
-import kotlin.io.encoding.Base64
-//import org.mifos.fineract.client.ktorHttpClient
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
@@ -365,6 +361,12 @@ class FineractClient private constructor(
         private var loginUsername: String? = null
         private var loginPassword: String? = null
         private var insecure: Boolean = false
+//        private lateinit var httpClientEngine: HttpClientEngineFactory<*>
+
+//        fun httpClient(httpClient : HttpClientEngineFactory<*>) : Builder{
+//            this.httpClientEngine = httpClient
+//            return this
+//        }
 
         fun baseURL(baseURL: String): Builder {
             this.baseURL = baseURL
@@ -390,7 +392,8 @@ class FineractClient private constructor(
 
         @OptIn(ExperimentalEncodingApi::class)
         fun build(): FineractClient {
-            val ktorClient = HttpClient{
+
+            val ktorClient = HttpClient(){
                 install(ContentNegotiation) {
                     json(
                         Json {
@@ -414,15 +417,16 @@ class FineractClient private constructor(
                                     password = loginPassword.toString(),
                                 )
                             }
+
                         }
                     }
                 }
-                val credentials = "$loginUsername:$loginPassword"
-                val encoded = Base64.encode(credentials.toByteArray())
+
+//                val encoded = Base64.encode(("$loginUsername:$loginPassword").toByteArray())
                 defaultRequest {
-                    header("Authorization", "Basic $encoded")
                     contentType(ContentType.Application.Json)
                     headers {
+//                        append("Authorization", "Basic $encoded")
                         append("Accept", "application/json")
                         tenant?.let {
                             append("fineract-platform-tenantid", it)
@@ -437,6 +441,7 @@ class FineractClient private constructor(
 
             return FineractClient(ktorClient, ktorfitBuilder)
         }
+
     }
 
     companion object {

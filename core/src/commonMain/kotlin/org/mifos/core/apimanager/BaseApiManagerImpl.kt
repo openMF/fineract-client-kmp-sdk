@@ -29,8 +29,6 @@ class BaseApiManagerImpl : BaseApiManager {
 
     private lateinit var client: FineractClient
 
-
-
     override fun createService(
         username: String,
         password: String,
