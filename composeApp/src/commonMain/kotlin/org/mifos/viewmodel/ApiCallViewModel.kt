@@ -1,64 +1,77 @@
 package org.mifos.viewmodel
 
-import org.mifos.core.apimanager.BaseApiManager
-import org.mifos.core.apimanager.BaseUrl.Companion.API_ENDPOINT
-import org.mifos.core.apimanager.BaseUrl.Companion.API_PATH
-import org.mifos.core.apimanager.BaseUrl.Companion.PROTOCOL_HTTPS
-import org.mifos.fineract.client.models.PostAuthenticationRequest
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import org.mifos.repository.ApiCallRepo
+import org.mifos.utils.ApiParameters
+import org.mifos.utils.apiParametersValues
 
-class ApiCallViewModel {
+class ApiCallViewModel(private val apiCallRepo: ApiCallRepo) : ViewModel() {
 
-    object FineractApiProvider {
-        private const val BASE_URL = PROTOCOL_HTTPS + API_ENDPOINT + API_PATH
-        private const val TENANT = "default"
-        private const val USERNAME = "mifos"
-        private const val PASSWORD = "password"
-        val baseApiManager: BaseApiManager by lazy {
-            BaseApiManager.getInstance().apply {
-                createService(USERNAME, PASSWORD, BASE_URL, TENANT, true)
-            }
+
+    private val authResponse: StateFlow<String> = apiCallRepo.authResponseStateFlow
+    fun getAuthResponse(): StateFlow<String> {
+        CoroutineScope(Dispatchers.Default).launch {
+            apiCallRepo.getAuthApi()
         }
-        val req = PostAuthenticationRequest(username = USERNAME, password = PASSWORD)
+        return authResponse
     }
 
-    suspend fun getAuthApi(): String = handleError {
-        FineractApiProvider.baseApiManager.getAuthApi()
-            .authenticate(FineractApiProvider.req, true)
-    }
-
-    suspend fun getClient(): String = handleError {
-        FineractApiProvider.baseApiManager.getClientsApi().retrieveOne11(1, false)
-    }
-
-    suspend fun getSavingApi(): String = handleError {
-        FineractApiProvider.baseApiManager.getSavingsApi().retrieveOne25(0)
-    }
-
-    suspend fun getCenterApi(): String = handleError {
-        FineractApiProvider.baseApiManager.getCenterApi().retrieveOne14(1, false)
-    }
-
-    suspend fun getLoanApi(): String = handleError {
-        FineractApiProvider.baseApiManager.getLoanApi().retrieveAll27("mifos")
-    }
-
-    suspend fun getSurveyApi(): String = handleError {
-        FineractApiProvider.baseApiManager.getSurveyApi().findSurvey(1)
-    }
-
-    suspend fun getNoteApi(): String = handleError {
-        FineractApiProvider.baseApiManager.getNoteApi().retrieveNotesByResource("mifos", 1)
-    }
-
-    private suspend fun <T> handleError(
-        apiCall: suspend () -> T,
-    ): String {
-        return try {
-            val response = apiCall()
-            response.toString()
-        } catch (e: Throwable) {
-            "Error: ${e.message}"
+    private val clientResponse: StateFlow<String> = apiCallRepo.clientResponseStateFlow
+    fun getClientResponse(): StateFlow<String> {
+        CoroutineScope(Dispatchers.Default).launch {
+            apiCallRepo.getClientApi()
         }
+        return clientResponse
     }
+
+    private val savingResponse: StateFlow<String> = apiCallRepo.savingResponseStateFlow
+    fun getSavingResponse(): StateFlow<String> {
+        CoroutineScope(Dispatchers.Default).launch {
+            apiCallRepo.getSavingApi()
+        }
+        return savingResponse
+    }
+
+    private val centerResponse: StateFlow<String> = apiCallRepo.centerResponseStateFlow
+    fun getCenterResponse(): StateFlow<String> {
+        CoroutineScope(Dispatchers.Default).launch {
+            apiCallRepo.getCenterApi()
+        }
+        return centerResponse
+    }
+
+    private val loanResponse: StateFlow<String> = apiCallRepo.loanResponseStateFlow
+    fun getLoanResponse(): StateFlow<String> {
+        CoroutineScope(Dispatchers.Default).launch {
+            apiCallRepo.getLoanApi()
+        }
+        return loanResponse
+    }
+
+    private val surveyResponse: StateFlow<String> = apiCallRepo.surveyResponseStateFlow
+    fun getSurveyResponse(): StateFlow<String> {
+        CoroutineScope(Dispatchers.Default).launch {
+            apiCallRepo.getSurveyApi()
+        }
+        return surveyResponse
+    }
+
+    private val noteResponse: StateFlow<String> = apiCallRepo.noteResponseStateFlow
+    fun getNoteResponse(): StateFlow<String> {
+        CoroutineScope(Dispatchers.Default).launch {
+            apiCallRepo.getNoteApi()
+        }
+        return noteResponse
+    }
+
+
+    private val _apiParameters = MutableStateFlow(apiParametersValues())
+    val apiParameters: StateFlow<List<ApiParameters>> = _apiParameters
+
 
 }

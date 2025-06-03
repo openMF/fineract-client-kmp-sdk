@@ -8,13 +8,14 @@ compose-multiplatform = "1.7.3"
 espressoCore = "3.6.1"
 fineractClientCmp = "0.0.1"
 fineractClientKmp = "1.0.5"
-fineractClientKmpVersion = "1.0.5"
+fineractClientKmpVersion = "1.0.6"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 koinAndroid = "4.0.1"
+koin = "4.0.4"
 kotlin = "2.1.20"
 kotlinStdlib = "2.1.20"
-kotlinxCoroutinesAndroid = "1.10.2"
+kotlinxCoroutines = "1.10.2"
 kotlinxSerializationJson = "1.8.1"
 ktorClientOkhttp = "3.1.2"
 ktorfitLib = "2.5.1"
@@ -47,7 +48,10 @@ uiAndroid = "1.8.2"
 
 
 [libraries]
-
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktorVersion" }
 ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor" }
@@ -67,9 +71,11 @@ ext-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
 fineract-client-cmp = { module = "com.github.openMF:fineract-client-cmp", version.ref = "fineractClientCmp" }
 fineract-client-kmp = { module = "com.github.openMF:fineract-client-kmp", version.ref = "fineractClientKmp" }
 junit = { module = "junit:junit", version.ref = "junit" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }

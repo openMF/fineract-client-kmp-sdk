@@ -6,14 +6,10 @@ plugins {
     alias(libs.plugins.androidLibrary).apply(false)
     alias(libs.plugins.kotlinMultiplatform).apply(false)
     alias(libs.plugins.composeMultiplatform).apply(false)
-    alias(libs.plugins.kover) apply false
-    alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.dokka)
-
 }
 
 
 tasks.register<Delete>("cleanTask") {
-    delete(rootProject.buildDir)
+    delete(rootProject)
 
 }

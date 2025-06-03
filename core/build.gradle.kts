@@ -11,37 +11,22 @@ android {
     namespace = "org.mifos.core"
     compileSdk = 35
     buildToolsVersion = "35.0.0"
-
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-
-    packaging {
-        resources. excludes. add("META-INF/core_release.kotlin_module")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
 }
 
 
 kotlin {
-    jvmToolchain(21)
-    jvm() // For JVM applications
-    androidTarget() // For Android
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    jvm()
+    androidTarget()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "core"
+            isStatic = true
+        }
+    }
 
     js(IR){
         nodejs()
@@ -55,27 +40,19 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":fineract-client"))
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.json)
+            implementation(libs.ktorfit.lib)
+            implementation(libs.ktorfit.converters.call)
+            implementation(libs.ktorfit.converters.flow)
+            implementation(libs.niyajali.fineract.client.kmp)
         }
 
     }
 }
 
-
-dependencies {
-    implementation(libs.appcompat)
-    implementation(libs.firebase.crashlytics.buildtools)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-
-    // Testing dependency
-    androidTestImplementation(libs.truth)
-
-    // Kotlin standard library dependency
-    implementation(libs.kotlin.stdlib)
-
-
-    implementation(libs.converter.gson)
-
-}

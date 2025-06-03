@@ -1,5 +1,6 @@
 package org.mifos.screen
 
+import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -22,10 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,18 +36,23 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import org.mifos.theme.indigoViolet
 import org.mifos.theme.lightGray
 import org.mifos.theme.mistGray
-import org.mifos.utils.apiParametersValues
 import org.mifos.viewmodel.ApiCallViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun apiCallScreen() {
-    val apiParameters = remember {apiParametersValues()}
+fun apiCallScreen(
+    apiCallViewModel: ApiCallViewModel = koinViewModel()
+) {
+
+    val apiParameters by apiCallViewModel.apiParameters.collectAsState()
+    val listState = rememberLazyListState()
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,13 +72,20 @@ fun apiCallScreen() {
             modifier = Modifier.fillMaxSize()
                 .padding(top = 125.dp)
         ) {
-            LazyColumn(){
+            LazyColumn(
+                state = listState,
+                flingBehavior = ScrollableDefaults.flingBehavior()
+            ) {
                 items(apiParameters) { item ->
-                    ColumnDesign(item.apiName, item.apiDescription, item.apiIdentifier)
+                    ColumnDesign(
+                        item.apiName,
+                        item.apiDescription,
+                        item.apiIdentifier,
+                        apiCallViewModel
+                    )
                 }
             }
         }
-
     }
 }
 
@@ -83,11 +96,9 @@ fun ColumnDesign(
     apiName: String,
     apiDescription: String,
     apiIdentifier: String,
+    apiCallViewModel: ApiCallViewModel,
 ) {
-    var showMessage by rememberSaveable(apiIdentifier){ mutableStateOf(false) }
-    var responseData by rememberSaveable(apiIdentifier){ mutableStateOf("Loading") }
-    val coroutineScope = rememberCoroutineScope()
-    val apiCallViewModel: ApiCallViewModel = ApiCallViewModel()
+    var showMessage by rememberSaveable(apiIdentifier) { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.fillMaxWidth(9.8f)
@@ -135,19 +146,6 @@ fun ColumnDesign(
 
                         onClick = {
                             showMessage = true
-                            coroutineScope.launch {
-                                responseData = when (apiIdentifier) {
-                                    "authApi" -> apiCallViewModel.getAuthApi()
-                                    "clientApi" -> apiCallViewModel.getClient()
-                                    "savingApi" -> apiCallViewModel.getSavingApi()
-                                    "centerApi" -> apiCallViewModel.getCenterApi()
-                                    "loanApi" -> apiCallViewModel.getLoanApi()
-                                    "surveyApi" -> apiCallViewModel.getSurveyApi()
-                                    "noteApi" -> apiCallViewModel.getNoteApi()
-
-                                    else -> "Invalid API Request"
-                                }
-                            }
                         },
                         colors = ButtonDefaults.buttonColors(mistGray),
                         shape = RectangleShape,
@@ -168,6 +166,16 @@ fun ColumnDesign(
                 contentAlignment = Alignment.Center
             ) {
                 if (showMessage) {
+                   val responseData = when (apiIdentifier) {
+                        "authApi" -> apiCallViewModel.getAuthResponse().collectAsState().value
+                        "clientApi" -> apiCallViewModel.getClientResponse().collectAsState().value
+                        "savingApi" -> apiCallViewModel.getSavingResponse().collectAsState().value
+                        "centerApi" -> apiCallViewModel.getCenterResponse().collectAsState().value
+                        "loanApi" -> apiCallViewModel.getLoanResponse().collectAsState().value
+                        "surveyApi" -> apiCallViewModel.getSurveyResponse().collectAsState().value
+                        "noteApi" -> apiCallViewModel.getNoteResponse().collectAsState().value
+                        else -> "Invalid API Request"
+                    }
                     responseBody(responseData)
                 }
             }
@@ -176,9 +184,10 @@ fun ColumnDesign(
 }
 
 @Composable
-fun responseBody(responseData: String)  {
+fun responseBody(responseData: String) {
 
-    if(responseData == "Loading") {
+
+    if (responseData == "Loading") {
         Box(
             modifier = Modifier.padding(bottom = 20.dp),
             contentAlignment = Alignment.Center

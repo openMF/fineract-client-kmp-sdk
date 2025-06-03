@@ -20,7 +20,6 @@ import org.mifos.fineract.client.apis.StaffApi
 import org.mifos.fineract.client.infrastructure.FineractClient
 
 
-
 interface BaseApiManager {
 
     companion object {
@@ -30,11 +29,10 @@ interface BaseApiManager {
     }
 
     fun createService(
-        username: String,
-        password: String,
         baseUrl: String,
-        tenant: String = "default",
-        secured: Boolean = false
+        tenant: String,
+        username: String,
+        password: String
     )
 
     fun getClient(): FineractClient

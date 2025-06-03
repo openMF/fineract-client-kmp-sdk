@@ -30,17 +30,15 @@ class BaseApiManagerImpl : BaseApiManager {
     private lateinit var client: FineractClient
 
     override fun createService(
-        username: String,
-        password: String,
         baseUrl: String,
         tenant: String,
-        secured: Boolean
+        username: String,
+        password: String
+
     ) {
         val builder = FineractClient.builder()
             .baseURL(baseUrl)
-            .basicAuth(username, password)
-            .tenant(tenant)
-            .inSecure(secured)
+            .httpClient(httpClient(tenant, username, password))
         client = builder.build()
     }
 
