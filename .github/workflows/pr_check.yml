@@ -1,0 +1,113 @@
+# GitHub Actions workflow for continuous integration of Fineract Client KMP SDK
+name: Build and PR Check
+
+# Trigger conditions for the workflow
+on:
+  push:
+    branches:
+      - main
+  pull_request: # Trigger the workflow on push to main branch
+    branches:
+      - main  # Trigger the workflow on pull requests for main branch
+
+# Concurrency ensures that only a single job or workflow using the same concurrency group will run at a time.
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  checks:
+    name: Static Analysis Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java development environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Cache Gradle and build outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            build
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Make gradlew executable
+        shell: bash
+        run: chmod +x ./gradlew
+
+      - name: Run Spotless
+        shell: bash
+        run: ./gradlew spotlessCheck --no-configuration-cache --no-daemon
+
+      - name: Run Detekt
+        id: detekt_check
+        shell: bash
+        run: ./gradlew detekt
+
+      - name: Run Dependency Check
+        shell: bash
+        run: ./gradlew dependencyGuard
+
+      - name: Upload Detekt Reports
+        if: ${{ steps.detekt_check.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-reports
+          path: |
+            **/build/reports/detekt/detekt.md  
+
+
+  test_build_kmp:
+    name: Test and Build KMP
+    needs: [ checks ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java development environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Cache Gradle and build outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            build
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Make gradlew executable
+        shell: bash
+        run: chmod +x ./gradlew
+
+      - name: Run Unit Test
+        shell: bash
+        run: ./gradlew allTests
+
+      - name: Run Build
+        shell: bash
+        run: ./gradlew build
+

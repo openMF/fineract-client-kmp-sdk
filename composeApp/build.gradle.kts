@@ -12,6 +12,9 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.dependencyGuard)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -61,8 +64,8 @@ android {
             manifest.srcFile("src/androidMain/AndroidManifest.xml")
         }
     }
-
 }
+
 kotlin {
     jvmToolchain(21)
     androidTarget {
@@ -178,5 +181,10 @@ compose.desktop {
 compose.resources {
     publicResClass = true
     generateResClass = always
+}
+
+dependencyGuard {
+    configuration("releaseRuntimeClasspath")
+
 }
 

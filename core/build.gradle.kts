@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
+    alias(libs.plugins.dependencyGuard)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -53,6 +56,14 @@ kotlin {
             implementation(libs.niyajali.fineract.client.kmp)
         }
 
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+
     }
+}
+
+dependencyGuard {
+    configuration("releaseRuntimeClasspath")
 }
 
