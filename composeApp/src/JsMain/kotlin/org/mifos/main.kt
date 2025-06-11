@@ -11,9 +11,11 @@ fun main() {
 
     startingKoin()
 
-    onWasmReady {
-        ComposeViewport(document.body!!) {
+    document.body?.let { body ->
+        ComposeViewport(body) {
             App() // Render the root composable of the application.
         }
+    } ?: run {
+        console.error("document.body is null — cannot render Compose UI.")
     }
 }
