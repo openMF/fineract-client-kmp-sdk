@@ -32,6 +32,8 @@ material3Android = "1.3.1"
 ui = "1.0.0"
 uiToolingPreviewAndroid = "1.7.8"
 hotReload = "1.0.0-alpha03"
+dependencyGuard = "0.5.0"
+spotlessVersion = "6.25.0"
 
 
 
@@ -90,3 +92,5 @@ kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotReload" }
+dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dependencyGuard" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotlessVersion" }

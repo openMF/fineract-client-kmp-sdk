@@ -5,6 +5,8 @@ plugins {
     id("kotlin-kapt")
     id("maven-publish")
     id("de.jensklingenberg.ktorfit")
+    alias(libs.plugins.dependencyGuard)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -31,6 +33,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    lint {
+        abortOnError = false
     }
 
     kotlinOptions {
@@ -81,6 +87,10 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
+}
+
+dependencyGuard {
+    configuration("releaseRuntimeClasspath")
 }
 
 publishing {

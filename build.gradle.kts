@@ -10,6 +10,9 @@ plugins {
 
     id("de.jensklingenberg.ktorfit") version "2.1.0" apply false
 
+    alias(libs.plugins.dependencyGuard).apply(false)
+    alias(libs.plugins.spotless).apply(false)
+
 }
 
 
