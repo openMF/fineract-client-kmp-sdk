@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.composeMultiplatform)
     id("de.jensklingenberg.ktorfit")
+    alias(libs.plugins.dependencyGuard)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -68,11 +70,6 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    js {
-        browser()
-
-        binaries.executable()
-    }
 
 
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
@@ -181,5 +178,10 @@ compose.desktop {
         }
     }
 }
+
+dependencyGuard {
+    configuration("releaseRuntimeClasspath")
+}
+
 
 

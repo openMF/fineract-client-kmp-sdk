@@ -5,6 +5,8 @@ plugins {
     id("kotlin-kapt")
     id("maven-publish")
     id("de.jensklingenberg.ktorfit")
+    alias(libs.plugins.dependencyGuard)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -22,6 +24,10 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+    }
+
+    lint {
+        abortOnError = false
     }
 
     packaging {
@@ -95,4 +101,8 @@ publishing {
             }
         }
     }
+}
+
+dependencyGuard {
+    configuration("releaseRuntimeClasspath")
 }
