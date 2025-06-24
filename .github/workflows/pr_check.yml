@@ -49,6 +49,11 @@ jobs:
         shell: bash
         run: chmod +x ./gradlew
 
+      - name: Run Detekt
+        id: detekt
+        shell: bash
+        run: ./gradlew detekt
+
       - name: Run Spotless
         shell: bash
         run: ./gradlew spotlessCheck --no-configuration-cache --no-daemon
@@ -56,6 +61,14 @@ jobs:
       - name: Run Dependency Check
         shell: bash
         run: ./gradlew dependencyGuard
+
+      - name: Upload Detekt Report
+        if: ${{ steps.detekt.outcome == 'success'}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-report
+          path: |
+            build/reports/detekt/detekt.xml
 
 
   test_build_kmp:
