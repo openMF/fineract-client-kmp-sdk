@@ -1,13 +1,17 @@
 package org.mifos
 
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.ComposeViewport
-import kotlinx.browser.document
+import androidx.compose.ui.window.CanvasBasedWindow
+import org.mifos.di.startingKoin
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    val body = document.body ?: return
-    ComposeViewport(body) {
+
+    startingKoin()
+
+    CanvasBasedWindow(
+        canvasElementId = "ComposeTarget",
+    ) {
         App()
     }
 }

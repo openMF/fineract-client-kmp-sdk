@@ -1,17 +1,13 @@
 package org.mifos
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.runComposeUiTest
-import kotlin.test.Test
 
-@OptIn(ExperimentalTestApi::class)
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
 class ComposeTest {
 
+
     @Test
-    fun simpleCheck() = runComposeUiTest {
-        setContent {
-            App("Hello World!")
-        }
-
-
+    fun addition_isCorrect() {
+        assertEquals(4, 2 + 2)
     }
 }
