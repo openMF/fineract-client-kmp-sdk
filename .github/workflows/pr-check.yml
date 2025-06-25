@@ -89,10 +89,3 @@ jobs:
       web_package_name: 'composeApp' # <-- Change Your Web Package Name
       ios_package_name: 'iosApp' # <-- Change Your iOS Package Name
       build_ios: false # <-- Change to 'false' if you don't want to build iOS
-      git_url: 'git@github.com:openMF/ios-provisioning-profile.git'
-      match_type: 'adhoc'
-      app_identifier: 'org.mifos.fineract.testing'
-      provisioning_profile_name: 'match AdHoc org.mifos.fineract.testing'
-    secrets:
-      match_ssh_private_key: ${{ secrets.MATCH_SSH_PRIVATE_KEY }}
-      match_password: ${{ secrets.MATCH_PASSWORD }}
