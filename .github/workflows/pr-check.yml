@@ -90,7 +90,6 @@ jobs:
       ios_package_name: 'iosApp' # <-- Change Your iOS Package Name
       build_ios: false # <-- Change to 'false' if you don't want to build iOS
       git_url: 'git@github.com:openMF/ios-provisioning-profile.git'
-      git_branch: 'master'
       match_type: 'adhoc'
       app_identifier: 'org.mifos.fineract.testing'
       provisioning_profile_name: 'match AdHoc org.mifos.fineract.testing'
