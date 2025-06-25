@@ -1,9 +1,17 @@
+/*
+ * Copyright 2025 Mifos Initiative
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
+ */
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -17,7 +25,7 @@ plugins {
 }
 
 android {
-    namespace = "org.mifos"
+    namespace = "org.mifos.fineract.testapp"
     compileSdk = 35
     buildToolsVersion = "35.0.0"
 
@@ -25,8 +33,8 @@ android {
         applicationId = "org.mifos"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionName = System.getenv("VERSION") ?: project.dynamicVersion
+        versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
@@ -64,12 +72,38 @@ android {
         }
     }
 
+    flavorDimensions += FlavorDimension.contentType.name
+    productFlavors {
+        MifosFlavor.values().forEach {
+            create(it.name) {
+                dimension = it.dimension.name
+                if (it.applicationIdSuffix != null) {
+                    applicationIdSuffix = it.applicationIdSuffix
+                }
+            }
+        }
+    }
 }
+
+@Suppress("EnumEntryName")
+enum class FlavorDimension {
+    contentType
+}
+
+@Suppress("EnumEntryName")
+enum class MifosFlavor(val dimension: FlavorDimension, val applicationIdSuffix: String? = null) {
+    demo(FlavorDimension.contentType, applicationIdSuffix = ".demo"),
+    prod(FlavorDimension.contentType)
+}
+
 kotlin {
+    applyDefaultHierarchyTemplate()
+
     jvmToolchain(21)
+
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -84,7 +118,11 @@ kotlin {
         }
     }
 
-    jvm("desktop")
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
 
     js(IR) {
         browser {
@@ -117,22 +155,25 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.lifecycleViewmodel)
+
             implementation(libs.koin.core)
-            implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.coroutines.test)
+
             implementation(libs.niyajali.fineract.client.kmp)
-
-            implementation(project(":core"))
-
+            implementation(libs.kotlinx.serialization.json)
         }
 
         commonTest.dependencies {
@@ -148,10 +189,8 @@ kotlin {
             implementation(libs.koin.android)
         }
 
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-            }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
         }
     }
 }
@@ -162,10 +201,10 @@ dependencyGuard {
 
 compose.desktop {
     application {
-        mainClass = "org.mifos.MainKt"
+        mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
-            packageName = "org.mifos"
+            packageName = "org.mifos.fineract.testapp"
             packageVersion = "1.0.1"
         }
     }
@@ -175,4 +214,8 @@ compose.resources {
     publicResClass = true
     generateResClass = always
 }
+
+val Project.dynamicVersion
+    get() = project.version.toString().split('+')[0]
+
 
