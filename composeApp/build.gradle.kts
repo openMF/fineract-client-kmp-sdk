@@ -196,7 +196,7 @@ kotlin {
 }
 
 dependencyGuard {
-    configuration("releaseRuntimeClasspath")
+    configuration("demoReleaseRuntimeClasspath")
 }
 
 compose.desktop {
