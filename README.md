@@ -1,7 +1,7 @@
-# Fineract Client Kotlin Multiplatform SDK
+# Mifos-X Client Kotlin Multiplatform SDK
 
-Fineract Client SDK is a Kotlin-based SDK designed to interact with the Apache Fineract 1.x platform. It basically exposes services to Applications, offering an abstract layer and avoiding the need to construct the client and Services.
-Fineract client sdk is built on top of [Fineract client Kmp](https://github.com/openMF/fineract-client-kmp) utilizes its model classes and services.
+Mifos-X Client SDK is a Kotlin-based SDK designed to interact with the Apache Fineract 1.x platform. It basically exposes services to Applications, offering an abstract layer and avoiding the need to construct the client and Services.
+Mifos-X Client SDK is built on top of [Mifos-X client Kmp](https://github.com/openMF/fineract-client-kmp) utilizes its model classes and services.
 
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=flat-square&logo=kotlin&logoColor=white)
 ![Kotlin Multiplatform](https://img.shields.io/badge/Kotlin%20Multiplatform-4c8d3f?style=flat-square&logo=kotlin&logoColor=white)
@@ -17,7 +17,7 @@ Fineract client sdk is built on top of [Fineract client Kmp](https://github.com/
 Please refer to the  [Development Setup Guide](https://github.com/openMF/fineract-client-kmp-sdk/wiki/Set-up-an-environment) for detailed instructions on configuring the development environment.
 
 ## How to Contribute
-Thank you for your interest in contributing to the Fineract Client Sdk project by Mifos! We welcome all contributions and encourage you to follow these guidelines to ensure a smooth and efficient collaboration process.
+Thank you for your interest in contributing to the Mifos-X Client Sdk project by Mifos! We welcome all contributions and encourage you to follow these guidelines to ensure a smooth and efficient collaboration process.
 To get started, please refer to the [Contribution Guide](https://github.com/openMF/fineract-client-kmp-sdk/wiki/How-to-Contribute) for detailed instructions on how to contribute to the project.
 
 
