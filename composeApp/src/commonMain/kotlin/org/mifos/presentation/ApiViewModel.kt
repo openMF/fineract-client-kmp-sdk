@@ -25,6 +25,7 @@ import org.mifos.core.data.network.LoanRequest
 import org.mifos.core.data.network.NoteRequest
 import org.mifos.core.data.network.SavingsRequest
 import org.mifos.core.data.network.SurveyRequest
+import org.mifos.utils.projectDetailUtils
 
 /**
  * Simplified ViewModel using ApiHandler framework
@@ -33,6 +34,9 @@ import org.mifos.core.data.network.SurveyRequest
 internal class ApiViewModel(
     private val apiService: ApiService,
 ) : ViewModel() {
+
+    private val _projectDataState = MutableStateFlow(projectDetailUtils())
+    val projectDataState = _projectDataState.asStateFlow()
 
     private val _uiState = MutableStateFlow(ApiUiState())
     val uiState: StateFlow<ApiUiState> = _uiState.asStateFlow()
@@ -150,6 +154,9 @@ internal class ApiViewModel(
             lastOperation = "",
         )
     }
+
+
+
 }
 
 /**
@@ -173,3 +180,6 @@ internal sealed interface ApiAction {
     data object ClearError : ApiAction
     data object ClearResponse : ApiAction
 }
+
+
+

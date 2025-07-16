@@ -11,16 +11,13 @@
 <resources>
     <string name="app_name">Mifos Android Architecture</string>
 
-    <string-array name="project_name">
-        <item>Mifos X Field Officer Application</item>
-        <item>Mifos-Mobile</item>
-        <item>Mifos-Pay</item>
-    </string-array>
+    <string name="field_officer_name">Mifos X Field Officer Application</string>
+    <string name="mifos_mobile_name">Mifos-Mobile</string>
+    <string name="mifos_pay_name">Mifos-Pay</string>
 
-    <string-array name="project_description">
-        <item>Test All the API's which is used in Mifos X Field Officer project</item>
-        <item>Test All the API's which is used in Mifos-Mobile project</item>
-        <item>Test All the API's which is used in Mifos-Pay project</item>
-    </string-array>
+    <string name="field_officer_desc">Test All the API's which is used in Mifos X Field Officer project</string>
+    <string name="mifos_mobile_desc">Test All the API's which is used in Mifos-Mobile project</string>
+    <string name="mifos_pay_desc">Test All the API's which is used in Mifos-Pay project</string>
+
 
 </resources>

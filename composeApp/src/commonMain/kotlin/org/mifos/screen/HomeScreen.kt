@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,6 +29,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,10 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fineract_sdk_cmp.composeapp.generated.resources.Res
 import fineract_sdk_cmp.composeapp.generated.resources.app_name
-import fineract_sdk_cmp.composeapp.generated.resources.project_description
-import fineract_sdk_cmp.composeapp.generated.resources.project_name
-import org.jetbrains.compose.resources.stringArrayResource
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.mifos.presentation.ApiViewModel
 
 
 /**
@@ -50,9 +53,10 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 internal fun ApiCallScreen(
     modifier: Modifier = Modifier,
+    apiViewModel : ApiViewModel = koinViewModel()
 ) {
-    val projectName = stringArrayResource(Res.array.project_name)
-    val projectDesc = stringArrayResource(Res.array.project_description)
+
+    val projectData by apiViewModel.projectDataState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -106,16 +110,16 @@ internal fun ApiCallScreen(
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(1),
                             ) {
-                                items(projectName.size ) { it->
-                                    Box(modifier, projectName[it], projectDesc[it])
+                                items(projectData ) { it->
+                                    Box(modifier, it.projectName, it.projectDesc)
                                 }
                             }
                         } else {
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(3),
                             ) {
-                                items(projectName.size) { it ->
-                                    Box(modifier, projectName[it], projectDesc[it])
+                                items(projectData) { it ->
+                                    Box(modifier, it.projectName, it.projectDesc)
                                 }
                             }
                         }
@@ -127,7 +131,7 @@ internal fun ApiCallScreen(
 }
 
 @Composable
-private fun Box(modifier: Modifier, projectName: String, projectDesc: String) {
+private fun Box(modifier: Modifier, projectName: StringResource, projectDesc: StringResource) {
 
     Card(
         colors = CardDefaults.cardColors(Color.White),
@@ -140,14 +144,14 @@ private fun Box(modifier: Modifier, projectName: String, projectDesc: String) {
             horizontalAlignment = Alignment.Start,
         ) {
             Text(
-                text = projectName,
+                text = stringResource(projectName),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
 
             Text(
                 modifier = modifier.padding(top = 8.dp),
-                text = projectDesc,
+                text = stringResource(projectDesc),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
