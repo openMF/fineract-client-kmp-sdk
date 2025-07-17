@@ -154,9 +154,6 @@ internal class ApiViewModel(
             lastOperation = "",
         )
     }
-
-
-
 }
 
 /**
@@ -180,6 +177,3 @@ internal sealed interface ApiAction {
     data object ClearError : ApiAction
     data object ClearResponse : ApiAction
 }
-
-
-

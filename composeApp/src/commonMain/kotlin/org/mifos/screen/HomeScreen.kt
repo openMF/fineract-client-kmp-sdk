@@ -10,16 +10,15 @@
 package org.mifos.screen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,7 +44,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.mifos.presentation.ApiViewModel
 
-
 /**
  * Simplified API Call Screen using the unified ApiHandler framework
  * Demonstrates clean, simple architecture without unnecessary complexity
@@ -53,14 +52,14 @@ import org.mifos.presentation.ApiViewModel
 @Composable
 internal fun ApiCallScreen(
     modifier: Modifier = Modifier,
-    apiViewModel : ApiViewModel = koinViewModel()
+    apiViewModel: ApiViewModel = koinViewModel(),
 ) {
-
     val projectData by apiViewModel.projectDataState.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(Color.White),
                 title = {
                     Text(
                         text = stringResource(Res.string.app_name),
@@ -68,59 +67,47 @@ internal fun ApiCallScreen(
                 },
             )
         },
-        modifier = modifier,
     ) { paddingValues ->
 
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
+        Box(
+            modifier = modifier.fillMaxWidth()
                 .padding(paddingValues),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            contentAlignment = Alignment.Center,
         ) {
-            ElevatedCard(
-                modifier = modifier.fillMaxWidth(.95f),
+            Column(
+                modifier = modifier
+                    .fillMaxWidth(.98f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start,
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                Text(
+                    modifier = modifier.padding(start = 20.dp, top = 10.dp),
+                    text = "Test Different Projects API",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+
+                BoxWithConstraints(
+                    modifier = modifier.fillMaxWidth(1f),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = "Test Different Projects API",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                    }
+                    val isCompact = maxWidth < 600.dp
 
-                    BoxWithConstraints(
-                        modifier = modifier.fillMaxWidth(1f),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        val isCompact = maxWidth < 600.dp
-
-                        if (isCompact) {
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(1),
-                            ) {
-                                items(projectData ) { it->
-                                    Box(modifier, it.projectName, it.projectDesc)
-                                }
+                    if (isCompact) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(1),
+                        ) {
+                            items(projectData) { it ->
+                                ItemBox(modifier, it.projectName, it.projectDesc)
                             }
-                        } else {
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(3),
-                            ) {
-                                items(projectData) { it ->
-                                    Box(modifier, it.projectName, it.projectDesc)
-                                }
+                        }
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                        ) {
+                            items(projectData) { it ->
+                                ItemBox(modifier, it.projectName, it.projectDesc)
                             }
                         }
                     }
@@ -131,9 +118,8 @@ internal fun ApiCallScreen(
 }
 
 @Composable
-private fun Box(modifier: Modifier, projectName: StringResource, projectDesc: StringResource) {
-
-    Card(
+private fun ItemBox(modifier: Modifier, projectName: StringResource, projectDesc: StringResource) {
+    ElevatedCard(
         colors = CardDefaults.cardColors(Color.White),
         modifier = Modifier.padding(16.dp),
     ) {
@@ -145,14 +131,14 @@ private fun Box(modifier: Modifier, projectName: StringResource, projectDesc: St
         ) {
             Text(
                 text = stringResource(projectName),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary,
             )
 
             Text(
                 modifier = modifier.padding(top = 8.dp),
                 text = stringResource(projectDesc),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
             )
 
@@ -161,7 +147,6 @@ private fun Box(modifier: Modifier, projectName: StringResource, projectDesc: St
                     .padding(top = 20.dp),
                 onClick = {},
                 colors = ButtonDefaults.textButtonColors(MaterialTheme.colorScheme.primary),
-
             ) {
                 Text(
                     text = "Click Here",
