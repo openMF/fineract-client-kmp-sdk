@@ -11,6 +11,13 @@ package org.mifos.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import fineract_sdk_cmp.composeapp.generated.resources.Res
+import fineract_sdk_cmp.composeapp.generated.resources.field_officer_desc
+import fineract_sdk_cmp.composeapp.generated.resources.field_officer_name
+import fineract_sdk_cmp.composeapp.generated.resources.mifos_mobile_desc
+import fineract_sdk_cmp.composeapp.generated.resources.mifos_mobile_name
+import fineract_sdk_cmp.composeapp.generated.resources.mifos_pay_desc
+import fineract_sdk_cmp.composeapp.generated.resources.mifos_pay_name
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +32,7 @@ import org.mifos.core.data.network.LoanRequest
 import org.mifos.core.data.network.NoteRequest
 import org.mifos.core.data.network.SavingsRequest
 import org.mifos.core.data.network.SurveyRequest
-import org.mifos.utils.projectDetailUtils
+import org.mifos.model.ProjectDetails
 
 /**
  * Simplified ViewModel using ApiHandler framework
@@ -176,4 +183,12 @@ internal sealed interface ApiAction {
     data class GetNote(val resourceType: String, val resourceId: Long, val noteId: Long) : ApiAction
     data object ClearError : ApiAction
     data object ClearResponse : ApiAction
+}
+
+internal fun projectDetailUtils(): List<ProjectDetails> {
+    return listOf(
+        ProjectDetails(Res.string.field_officer_name, Res.string.field_officer_desc),
+        ProjectDetails(Res.string.mifos_mobile_name, Res.string.mifos_mobile_desc),
+        ProjectDetails(Res.string.mifos_pay_name, Res.string.mifos_pay_desc),
+    )
 }
