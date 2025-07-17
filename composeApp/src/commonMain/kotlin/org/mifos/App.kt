@@ -10,7 +10,7 @@
 package org.mifos
 
 import androidx.compose.runtime.Composable
-import org.mifos.screen.ApiCallScreen
+import org.mifos.navigation.MainNavHost
 import org.mifos.theme.AppTheme
 
 /**
@@ -20,6 +20,6 @@ import org.mifos.theme.AppTheme
 @Composable
 fun App() {
     AppTheme {
-        ApiCallScreen()
+        MainNavHost()
     }
 }

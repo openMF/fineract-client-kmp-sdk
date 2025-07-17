@@ -32,7 +32,9 @@ import org.mifos.core.data.network.LoanRequest
 import org.mifos.core.data.network.NoteRequest
 import org.mifos.core.data.network.SavingsRequest
 import org.mifos.core.data.network.SurveyRequest
+import org.mifos.model.MifosFieldOfficerApiName
 import org.mifos.model.ProjectDetails
+import org.mifos.navigation.NavGraphRoute
 
 /**
  * Simplified ViewModel using ApiHandler framework
@@ -42,8 +44,11 @@ internal class ApiViewModel(
     private val apiService: ApiService,
 ) : ViewModel() {
 
-    private val _projectDataState = MutableStateFlow(projectDetailUtils())
+    private val _projectDataState = MutableStateFlow(projectDetailData())
     val projectDataState = _projectDataState.asStateFlow()
+
+    private val _mifosFieldOfficerApiNameState = MutableStateFlow(mifosFieldOfficerApiName())
+    val mifosFieldOfficerApiNameState = _mifosFieldOfficerApiNameState.asStateFlow()
 
     private val _uiState = MutableStateFlow(ApiUiState())
     val uiState: StateFlow<ApiUiState> = _uiState.asStateFlow()
@@ -185,10 +190,16 @@ internal sealed interface ApiAction {
     data object ClearResponse : ApiAction
 }
 
-internal fun projectDetailUtils(): List<ProjectDetails> {
+private fun projectDetailData(): List<ProjectDetails> {
     return listOf(
-        ProjectDetails(Res.string.field_officer_name, Res.string.field_officer_desc),
-        ProjectDetails(Res.string.mifos_mobile_name, Res.string.mifos_mobile_desc),
-        ProjectDetails(Res.string.mifos_pay_name, Res.string.mifos_pay_desc),
+        ProjectDetails(Res.string.field_officer_name, Res.string.field_officer_desc, NavGraphRoute.MIFOS_FIELD_OPERATION),
+        ProjectDetails(Res.string.mifos_mobile_name, Res.string.mifos_mobile_desc, NavGraphRoute.MIFOS_MOBILE),
+        ProjectDetails(Res.string.mifos_pay_name, Res.string.mifos_pay_desc, NavGraphRoute.MIFOS_PAY),
+    )
+}
+
+private fun mifosFieldOfficerApiName(): List<MifosFieldOfficerApiName> {
+    return listOf(
+        MifosFieldOfficerApiName.AUTHENTICATION,
     )
 }

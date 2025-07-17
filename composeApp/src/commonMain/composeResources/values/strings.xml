@@ -11,7 +11,7 @@
 <resources>
     <string name="app_name">Mifos Android Architecture</string>
 
-    <string name="field_officer_name">Mifos X Field Officer Application</string>
+    <string name="field_officer_name">Mifos X Field Officer</string>
     <string name="mifos_mobile_name">Mifos-Mobile</string>
     <string name="mifos_pay_name">Mifos-Pay</string>
 
@@ -19,5 +19,7 @@
     <string name="mifos_mobile_desc">Test All the API's which is used in Mifos-Mobile project</string>
     <string name="mifos_pay_desc">Test All the API's which is used in Mifos-Pay project</string>
 
-
+    <!--Api's Name-->
+    <string name="authentication_api_name">Authentication API</string>
+    <string name="center_api_name">Center API</string>
 </resources>

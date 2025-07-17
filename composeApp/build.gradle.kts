@@ -160,6 +160,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
@@ -174,6 +175,8 @@ kotlin {
 
             implementation(libs.niyajali.fineract.client.kmp)
             implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.navigation.compose)
         }
 
         commonTest.dependencies {

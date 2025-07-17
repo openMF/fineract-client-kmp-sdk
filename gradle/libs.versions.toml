@@ -1,18 +1,18 @@
 [versions]
-agp = "8.9.3"
+agp = "8.11.1"
 adapterRxjava = "2.9.0"
 appcompat = "1.7.0"
 cardview = "1.0.0"
 converterGson = "2.11.0"
-compose-multiplatform = "1.7.3"
+compose-multiplatform = "1.8.2"
 espressoCore = "3.6.1"
 fineractClientCmp = "0.0.1"
 fineractClientKmp = "1.0.5"
 fineractClientKmpVersion = "1.0.6"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-koin = "4.0.4"
-kotlin = "2.1.20"
+koin = "4.1.0"
+kotlin = "2.2.0"
 kotlinStdlib = "2.1.20"
 kotlinxCoroutines = "1.10.2"
 kotlinxSerializationJson = "1.8.1"
@@ -22,6 +22,7 @@ ktorVersion = "3.1.3"
 lifecycleExtensions = "2.2.0"
 lifecycleRuntimeKtx = "2.9.0"
 lifecycleViewmodelCompose = "2.8.3"
+navigationCompose = "2.9.0-beta03"
 okhttp = "4.12.0"
 preferenceKtx = "1.2.1"
 rxandroid = "1.2.1"
@@ -75,6 +76,7 @@ ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref =
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 lifecycleViewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleViewmodelCompose" }
 
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 niyajali-fineract-client-kmp = { module = "io.github.niyajali:fineract-client-kmp", version.ref = "fineractClientKmpVersion" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }

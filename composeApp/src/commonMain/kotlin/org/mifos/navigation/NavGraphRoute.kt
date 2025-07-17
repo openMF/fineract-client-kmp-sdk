@@ -7,12 +7,12 @@
  *
  * See See https://github.com/openMF/kmp-project-template/blob/main/LICENSE
  */
-package org.mifos.model
+package org.mifos.navigation
 
-import org.jetbrains.compose.resources.StringResource
+object NavGraphRoute {
 
-internal data class ProjectDetails(
-    val projectName: StringResource,
-    val projectDesc: StringResource,
-    val navRoute: String,
-)
+    const val HOME_SCREEN = "home_screen"
+    const val MIFOS_FIELD_OPERATION = "mifos_field_operation_screen"
+    const val MIFOS_MOBILE = "mifos_mobile"
+    const val MIFOS_PAY = "mifos_pay"
+}
