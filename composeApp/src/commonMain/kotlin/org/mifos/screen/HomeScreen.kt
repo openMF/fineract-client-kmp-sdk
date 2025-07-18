@@ -23,11 +23,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,12 +34,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import fineract_sdk_cmp.composeapp.generated.resources.Res
 import fineract_sdk_cmp.composeapp.generated.resources.app_name
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.mifos.presentation.ApiViewModel
+import org.mifos.screen.component.MifosScaffoldTopBar
 
 /**
  * Simplified API Call Screen using the unified ApiHandler framework
@@ -50,23 +49,15 @@ import org.mifos.presentation.ApiViewModel
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ApiCallScreen(
-    modifier: Modifier = Modifier,
+internal fun HomeScreen(
+    navController: NavHostController,
+    modifier: Modifier,
     apiViewModel: ApiViewModel = koinViewModel(),
 ) {
     val projectData by apiViewModel.projectDataState.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(Color.White),
-                title = {
-                    Text(
-                        text = stringResource(Res.string.app_name),
-                    )
-                },
-            )
-        },
+    MifosScaffoldTopBar(
+        title = stringResource(Res.string.app_name),
     ) { paddingValues ->
 
         Box(
@@ -99,7 +90,13 @@ internal fun ApiCallScreen(
                             columns = GridCells.Fixed(1),
                         ) {
                             items(projectData) { it ->
-                                ItemBox(modifier, it.projectName, it.projectDesc)
+                                ItemBox(
+                                    modifier,
+                                    it.projectName,
+                                    it.projectDesc,
+                                    it.navRoute,
+                                    navController,
+                                )
                             }
                         }
                     } else {
@@ -107,7 +104,13 @@ internal fun ApiCallScreen(
                             columns = GridCells.Fixed(3),
                         ) {
                             items(projectData) { it ->
-                                ItemBox(modifier, it.projectName, it.projectDesc)
+                                ItemBox(
+                                    modifier,
+                                    it.projectName,
+                                    it.projectDesc,
+                                    it.navRoute,
+                                    navController,
+                                )
                             }
                         }
                     }
@@ -118,7 +121,13 @@ internal fun ApiCallScreen(
 }
 
 @Composable
-private fun ItemBox(modifier: Modifier, projectName: StringResource, projectDesc: StringResource) {
+private fun ItemBox(
+    modifier: Modifier,
+    projectName: StringResource,
+    projectDesc: StringResource,
+    navRoute: String,
+    navController: NavHostController,
+) {
     ElevatedCard(
         colors = CardDefaults.cardColors(Color.White),
         modifier = Modifier.padding(16.dp),
@@ -132,6 +141,7 @@ private fun ItemBox(modifier: Modifier, projectName: StringResource, projectDesc
             Text(
                 text = stringResource(projectName),
                 style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary,
             )
 
@@ -145,7 +155,9 @@ private fun ItemBox(modifier: Modifier, projectName: StringResource, projectDesc
             TextButton(
                 modifier = modifier.fillMaxWidth()
                     .padding(top = 20.dp),
-                onClick = {},
+                onClick = {
+                    navController.navigate(navRoute)
+                },
                 colors = ButtonDefaults.textButtonColors(MaterialTheme.colorScheme.primary),
             ) {
                 Text(

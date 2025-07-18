@@ -20,6 +20,10 @@ plugins {
     alias(libs.plugins.spotless) apply true
 }
 
+dependencyGuard {
+    configuration("classpath")
+}
+
 object DynamicVersion {
     fun setDynamicVersion(file: File, version: String) {
         val cleanedVersion = version.split('+')[0]
