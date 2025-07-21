@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -55,6 +57,7 @@ import org.mifos.model.MifosFieldOfficerApiName
 import org.mifos.presentation.ApiAction
 import org.mifos.presentation.ApiUiState
 import org.mifos.presentation.ApiViewModel
+import org.mifos.screen.ApiResponse
 import org.mifos.screen.component.MifosScaffoldTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,27 +142,46 @@ internal fun MifosFieldOfficerScreen(
             }
         }
     }
+
+    if (uiState.jsonResponse.isNotEmpty() || uiState.error != null) {
+        ApiResponse(
+            uiState,
+            apiViewModel::clearError,
+            apiViewModel::clearResponse,
+        )
+    }
 }
 
 @Composable
 internal fun AuthAPI(uiState: ApiUiState, onAction: (ApiAction) -> Unit) {
+    var username by remember { mutableStateOf("mifos") }
+    var password by remember { mutableStateOf("password") }
+
     Card(
         modifier = Modifier.fillMaxWidth(.98f).padding(5.dp),
     ) {
-        var username by remember { mutableStateOf("mifos") }
-        var password by remember { mutableStateOf("password") }
-
         Column(
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(
-                text = "Authentication",
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = "Authentication",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                )
 
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(16.dp),
+                    )
+                }
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -186,7 +208,10 @@ internal fun AuthAPI(uiState: ApiUiState, onAction: (ApiAction) -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.isLoading && username.isNotBlank() && password.isNotBlank(),
             ) {
-                Text("Authenticate")
+                Text(
+                    "Authenticate",
+                    style = MaterialTheme.typography.labelMedium,
+                )
             }
         }
     }
