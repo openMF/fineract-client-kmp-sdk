@@ -9,7 +9,7 @@
  */
 package org.mifos.screen
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,19 +42,18 @@ import org.mifos.presentation.ApiUiState
 @Composable
 internal fun ApiResponse(
     uiState: ApiUiState,
+    modifier: Modifier = Modifier,
     onClearError: () -> Unit,
     onClearResponse: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Dialog(
         onDismissRequest = {},
     ) {
-        ElevatedCard(
-            modifier = modifier.fillMaxWidth(),
-        ) {
+        ElevatedCard {
             Column(
-                modifier = modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 5.dp),
+                modifier = modifier.fillMaxWidth().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Text(
                     text = "API Response : ${uiState.lastOperation}",
@@ -65,17 +64,18 @@ internal fun ApiResponse(
                 // Error display
                 uiState.error?.let { error ->
                     Card(
-                        modifier = modifier.fillMaxWidth().height(250.dp).padding(top = 12.dp),
+                        modifier = modifier.height(300.dp),
                         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.errorContainer),
                     ) {
-                        SelectionContainer {
+                        SelectionContainer(
+                            modifier = modifier.padding(12.dp)
+                                .verticalScroll(rememberScrollState()),
+                        ) {
                             Text(
                                 text = "❌ Error: $error",
                                 fontFamily = FontFamily.Monospace,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.error,
-                                modifier = modifier.padding(12.dp)
-                                    .verticalScroll(rememberScrollState()),
                             )
                         }
                     }
@@ -84,7 +84,7 @@ internal fun ApiResponse(
                 // JSON Response display
                 if (uiState.jsonResponse.isNotEmpty()) {
                     Card(
-                        modifier = modifier.fillMaxWidth().padding(top = 12.dp),
+                        modifier = modifier.height(300.dp),
                     ) {
                         Column(
                             modifier = modifier.padding(12.dp),
@@ -96,25 +96,22 @@ internal fun ApiResponse(
                             Spacer(modifier = modifier.height(8.dp))
 
                             // Scrollable JSON response
-                            Box(
-                                modifier = modifier.fillMaxWidth().height(250.dp),
+                            SelectionContainer(
+                                modifier = modifier.fillMaxSize()
+                                    .verticalScroll(rememberScrollState()),
                             ) {
-                                SelectionContainer {
-                                    Text(
-                                        text = uiState.jsonResponse,
-                                        fontFamily = FontFamily.Monospace,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        modifier = modifier.fillMaxSize()
-                                            .verticalScroll(rememberScrollState()),
-                                    )
-                                }
+                                Text(
+                                    text = uiState.jsonResponse,
+                                    fontFamily = FontFamily.Monospace,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
                             }
                         }
                     }
                 }
 
                 TextButton(
-                    modifier = modifier.width(100.dp).padding(top = 5.dp),
+                    modifier = modifier.width(100.dp),
                     colors = ButtonDefaults.textButtonColors(MaterialTheme.colorScheme.primary),
                     onClick = if (uiState.error != null) {
                         onClearError

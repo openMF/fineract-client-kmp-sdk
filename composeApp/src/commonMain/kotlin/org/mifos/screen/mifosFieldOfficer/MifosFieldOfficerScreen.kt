@@ -131,8 +131,8 @@ internal fun MifosFieldOfficerScreen(
                             AnimatedVisibility(visible = isExpanded) {
                                 when (it) {
                                     MifosFieldOfficerApiName.AUTHENTICATION -> AuthAPI(
-                                        uiState,
-                                        apiViewModel::onAction,
+                                        uiState = uiState,
+                                        onAction = apiViewModel::onAction,
                                     )
                                 }
                             }
@@ -145,27 +145,31 @@ internal fun MifosFieldOfficerScreen(
 
     if (uiState.jsonResponse.isNotEmpty() || uiState.error != null) {
         ApiResponse(
-            uiState,
-            apiViewModel::clearError,
-            apiViewModel::clearResponse,
+            uiState = uiState,
+            onClearError = apiViewModel::clearError,
+            onClearResponse = apiViewModel::clearResponse,
         )
     }
 }
 
 @Composable
-internal fun AuthAPI(uiState: ApiUiState, onAction: (ApiAction) -> Unit) {
+internal fun AuthAPI(
+    uiState: ApiUiState,
+    modifier: Modifier = Modifier,
+    onAction: (ApiAction) -> Unit,
+) {
     var username by remember { mutableStateOf("mifos") }
     var password by remember { mutableStateOf("password") }
 
     Card(
-        modifier = Modifier.fillMaxWidth(.98f).padding(5.dp),
+        modifier = modifier.fillMaxWidth(.98f).padding(5.dp),
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
@@ -178,19 +182,19 @@ internal fun AuthAPI(uiState: ApiUiState, onAction: (ApiAction) -> Unit) {
                 if (uiState.isLoading) {
                     CircularProgressIndicator(
                         strokeWidth = 2.dp,
-                        modifier = Modifier.size(16.dp),
+                        modifier = modifier.size(16.dp),
                     )
                 }
             }
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it },
                     label = { Text("Username") },
-                    modifier = Modifier.weight(1f),
+                    modifier = modifier.weight(1f),
                     enabled = !uiState.isLoading,
                 )
 
@@ -198,14 +202,14 @@ internal fun AuthAPI(uiState: ApiUiState, onAction: (ApiAction) -> Unit) {
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Password") },
-                    modifier = Modifier.weight(1f),
+                    modifier = modifier.weight(1f),
                     enabled = !uiState.isLoading,
                 )
             }
 
             Button(
                 onClick = { onAction(ApiAction.Authenticate(username, password)) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 enabled = !uiState.isLoading && username.isNotBlank() && password.isNotBlank(),
             ) {
                 Text(
