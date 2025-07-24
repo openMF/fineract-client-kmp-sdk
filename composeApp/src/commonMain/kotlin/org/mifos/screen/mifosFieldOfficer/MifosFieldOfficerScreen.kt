@@ -63,8 +63,8 @@ import org.mifos.screen.component.MifosScaffoldTopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MifosFieldOfficerScreen(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
-    modifier: Modifier,
     apiViewModel: ApiViewModel = koinViewModel(),
 ) {
     val uiState by apiViewModel.uiState.collectAsState()
@@ -73,18 +73,19 @@ internal fun MifosFieldOfficerScreen(
     var expandedApi by remember { mutableStateOf<String?>(null) }
 
     MifosScaffoldTopBar(
+        modifier = modifier,
         title = stringResource(Res.string.field_officer_name) + " API's",
         navigationIconShow = true,
         navController = navController,
     ) { paddingValues ->
 
         Box(
-            modifier = modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .padding(paddingValues),
             contentAlignment = Alignment.TopCenter,
         ) {
             LazyColumn(
-                modifier = modifier.fillMaxWidth(.98f),
+                modifier = Modifier.fillMaxWidth(.98f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 items(mifosFieldOfficerApiNameState) { it ->
@@ -93,17 +94,17 @@ internal fun MifosFieldOfficerScreen(
                     val rotationAngle by animateFloatAsState(targetValue = if (isExpanded) 180f else 0f)
 
                     ElevatedCard(
-                        modifier = modifier.fillMaxWidth(.99f).padding(vertical = 4.dp),
+                        modifier = Modifier.fillMaxWidth(.99f).padding(vertical = 4.dp),
                         shape = RoundedCornerShape(8.dp),
                     ) {
                         Column(
-                            modifier = modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                                 .background(Color.White),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Row(
-                                modifier = modifier.fillMaxWidth().padding(start = 8.dp),
+                                modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
@@ -162,14 +163,14 @@ internal fun AuthAPI(
     var password by remember { mutableStateOf("password") }
 
     Card(
-        modifier = modifier.fillMaxWidth(.98f).padding(5.dp),
+        modifier = modifier.fillMaxWidth().padding(10.dp),
     ) {
         Column(
-            modifier = modifier.padding(12.dp),
+            modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
@@ -182,19 +183,19 @@ internal fun AuthAPI(
                 if (uiState.isLoading) {
                     CircularProgressIndicator(
                         strokeWidth = 2.dp,
-                        modifier = modifier.size(16.dp),
+                        modifier = Modifier.size(16.dp),
                     )
                 }
             }
             Row(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it },
                     label = { Text("Username") },
-                    modifier = modifier.weight(1f),
+                    modifier = Modifier.weight(1f),
                     enabled = !uiState.isLoading,
                 )
 
@@ -202,14 +203,14 @@ internal fun AuthAPI(
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Password") },
-                    modifier = modifier.weight(1f),
+                    modifier = Modifier.weight(1f),
                     enabled = !uiState.isLoading,
                 )
             }
 
             Button(
                 onClick = { onAction(ApiAction.Authenticate(username, password)) },
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.isLoading && username.isNotBlank() && password.isNotBlank(),
             ) {
                 Text(

@@ -10,6 +10,7 @@
 package org.mifos
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import org.mifos.navigation.MainNavHost
 import org.mifos.theme.AppTheme
 
@@ -18,8 +19,10 @@ import org.mifos.theme.AppTheme
  * Features authentication, client management, and demonstrates clean architecture benefits
  */
 @Composable
-fun App() {
+fun App(
+    modifier: Modifier = Modifier,
+) {
     AppTheme {
-        MainNavHost()
+        MainNavHost(modifier = modifier)
     }
 }

@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
@@ -49,9 +49,11 @@ internal fun ApiResponse(
     Dialog(
         onDismissRequest = {},
     ) {
-        ElevatedCard {
+        ElevatedCard(
+            modifier = modifier,
+        ) {
             Column(
-                modifier = modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
@@ -64,11 +66,13 @@ internal fun ApiResponse(
                 // Error display
                 uiState.error?.let { error ->
                     Card(
-                        modifier = modifier.height(300.dp),
+                        modifier = Modifier.height(300.dp),
                         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.errorContainer),
                     ) {
                         SelectionContainer(
-                            modifier = modifier.padding(12.dp)
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(12.dp)
                                 .verticalScroll(rememberScrollState()),
                         ) {
                             Text(
@@ -84,20 +88,20 @@ internal fun ApiResponse(
                 // JSON Response display
                 if (uiState.jsonResponse.isNotEmpty()) {
                     Card(
-                        modifier = modifier.height(300.dp),
+                        modifier = Modifier.height(300.dp),
                     ) {
                         Column(
-                            modifier = modifier.padding(12.dp),
+                            modifier = Modifier.padding(12.dp),
                         ) {
                             Text(
                                 text = "Success Response:",
                                 style = MaterialTheme.typography.labelLarge,
                             )
-                            Spacer(modifier = modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
                             // Scrollable JSON response
                             SelectionContainer(
-                                modifier = modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize()
                                     .verticalScroll(rememberScrollState()),
                             ) {
                                 Text(
@@ -111,7 +115,7 @@ internal fun ApiResponse(
                 }
 
                 TextButton(
-                    modifier = modifier.width(100.dp),
+                    modifier = Modifier.size(width = 70.dp, height = 30.dp),
                     colors = ButtonDefaults.textButtonColors(MaterialTheme.colorScheme.primary),
                     onClick = if (uiState.error != null) {
                         onClearError
