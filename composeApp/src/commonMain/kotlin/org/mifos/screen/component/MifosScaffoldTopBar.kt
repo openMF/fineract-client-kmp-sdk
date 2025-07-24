@@ -38,6 +38,7 @@ fun MifosScaffoldTopBar(
     content: @Composable (PaddingValues) -> Unit = {},
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(Color.White),

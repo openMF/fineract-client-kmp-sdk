@@ -20,24 +20,26 @@ import org.mifos.screen.mifosFieldOfficer.MifosFieldOfficerScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun MainNavHost() {
+internal fun MainNavHost(
+    modifier: Modifier = Modifier,
+) {
     val navController = rememberNavController()
-    val modifier = Modifier
 
     NavHost(
+        modifier = modifier,
         navController = navController,
         startDestination = NavGraphRoute.HOME_SCREEN,
     ) {
         composable(
             route = NavGraphRoute.HOME_SCREEN,
         ) {
-            HomeScreen(navController, modifier)
+            HomeScreen(navController = navController)
         }
 
         composable(
             route = NavGraphRoute.MIFOS_FIELD_OPERATION,
         ) {
-            MifosFieldOfficerScreen(navController, modifier)
+            MifosFieldOfficerScreen(navController = navController)
         }
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -55,13 +57,14 @@ import org.mifos.model.MifosFieldOfficerApiName
 import org.mifos.presentation.ApiAction
 import org.mifos.presentation.ApiUiState
 import org.mifos.presentation.ApiViewModel
+import org.mifos.screen.ApiResponse
 import org.mifos.screen.component.MifosScaffoldTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MifosFieldOfficerScreen(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
-    modifier: Modifier,
     apiViewModel: ApiViewModel = koinViewModel(),
 ) {
     val uiState by apiViewModel.uiState.collectAsState()
@@ -70,18 +73,19 @@ internal fun MifosFieldOfficerScreen(
     var expandedApi by remember { mutableStateOf<String?>(null) }
 
     MifosScaffoldTopBar(
+        modifier = modifier,
         title = stringResource(Res.string.field_officer_name) + " API's",
         navigationIconShow = true,
         navController = navController,
     ) { paddingValues ->
 
         Box(
-            modifier = modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .padding(paddingValues),
             contentAlignment = Alignment.TopCenter,
         ) {
             LazyColumn(
-                modifier = modifier.fillMaxWidth(.98f),
+                modifier = Modifier.fillMaxWidth(.98f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 items(mifosFieldOfficerApiNameState) { it ->
@@ -90,17 +94,17 @@ internal fun MifosFieldOfficerScreen(
                     val rotationAngle by animateFloatAsState(targetValue = if (isExpanded) 180f else 0f)
 
                     ElevatedCard(
-                        modifier = modifier.fillMaxWidth(.99f).padding(vertical = 4.dp),
+                        modifier = Modifier.fillMaxWidth(.99f).padding(vertical = 4.dp),
                         shape = RoundedCornerShape(8.dp),
                     ) {
                         Column(
-                            modifier = modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                                 .background(Color.White),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Row(
-                                modifier = modifier.fillMaxWidth().padding(start = 8.dp),
+                                modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
@@ -128,8 +132,8 @@ internal fun MifosFieldOfficerScreen(
                             AnimatedVisibility(visible = isExpanded) {
                                 when (it) {
                                     MifosFieldOfficerApiName.AUTHENTICATION -> AuthAPI(
-                                        uiState,
-                                        apiViewModel::onAction,
+                                        uiState = uiState,
+                                        onAction = apiViewModel::onAction,
                                     )
                                 }
                             }
@@ -139,27 +143,50 @@ internal fun MifosFieldOfficerScreen(
             }
         }
     }
+
+    if (uiState.jsonResponse.isNotEmpty() || uiState.error != null) {
+        ApiResponse(
+            uiState = uiState,
+            onClearError = apiViewModel::clearError,
+            onClearResponse = apiViewModel::clearResponse,
+        )
+    }
 }
 
 @Composable
-internal fun AuthAPI(uiState: ApiUiState, onAction: (ApiAction) -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(.98f).padding(5.dp),
-    ) {
-        var username by remember { mutableStateOf("mifos") }
-        var password by remember { mutableStateOf("password") }
+internal fun AuthAPI(
+    uiState: ApiUiState,
+    modifier: Modifier = Modifier,
+    onAction: (ApiAction) -> Unit,
+) {
+    var username by remember { mutableStateOf("mifos") }
+    var password by remember { mutableStateOf("password") }
 
+    Card(
+        modifier = modifier.fillMaxWidth().padding(10.dp),
+    ) {
         Column(
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(
-                text = "Authentication",
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = "Authentication",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                )
 
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(16.dp),
+                    )
+                }
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -186,7 +213,10 @@ internal fun AuthAPI(uiState: ApiUiState, onAction: (ApiAction) -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.isLoading && username.isNotBlank() && password.isNotBlank(),
             ) {
-                Text("Authenticate")
+                Text(
+                    "Authenticate",
+                    style = MaterialTheme.typography.labelMedium,
+                )
             }
         }
     }

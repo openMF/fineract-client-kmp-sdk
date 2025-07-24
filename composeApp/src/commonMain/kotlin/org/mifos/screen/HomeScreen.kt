@@ -50,29 +50,30 @@ import org.mifos.screen.component.MifosScaffoldTopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
-    modifier: Modifier,
     apiViewModel: ApiViewModel = koinViewModel(),
 ) {
     val projectData by apiViewModel.projectDataState.collectAsState()
 
     MifosScaffoldTopBar(
+        modifier = modifier,
         title = stringResource(Res.string.app_name),
     ) { paddingValues ->
 
         Box(
-            modifier = modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .padding(paddingValues),
             contentAlignment = Alignment.Center,
         ) {
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth(.98f),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start,
             ) {
                 Text(
-                    modifier = modifier.padding(start = 20.dp, top = 10.dp),
+                    modifier = Modifier.padding(start = 20.dp, top = 10.dp),
                     text = "Test Different Projects API",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -80,7 +81,7 @@ internal fun HomeScreen(
                 )
 
                 BoxWithConstraints(
-                    modifier = modifier.fillMaxWidth(1f),
+                    modifier = Modifier.fillMaxWidth(1f),
                     contentAlignment = Alignment.Center,
                 ) {
                     val isCompact = maxWidth < 600.dp
@@ -91,11 +92,10 @@ internal fun HomeScreen(
                         ) {
                             items(projectData) { it ->
                                 ItemBox(
-                                    modifier,
-                                    it.projectName,
-                                    it.projectDesc,
-                                    it.navRoute,
-                                    navController,
+                                    projectName = it.projectName,
+                                    projectDesc = it.projectDesc,
+                                    navRoute = it.navRoute,
+                                    navController = navController,
                                 )
                             }
                         }
@@ -105,11 +105,10 @@ internal fun HomeScreen(
                         ) {
                             items(projectData) { it ->
                                 ItemBox(
-                                    modifier,
-                                    it.projectName,
-                                    it.projectDesc,
-                                    it.navRoute,
-                                    navController,
+                                    projectName = it.projectName,
+                                    projectDesc = it.projectDesc,
+                                    navRoute = it.navRoute,
+                                    navController = navController,
                                 )
                             }
                         }
@@ -122,7 +121,7 @@ internal fun HomeScreen(
 
 @Composable
 private fun ItemBox(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     projectName: StringResource,
     projectDesc: StringResource,
     navRoute: String,
@@ -130,10 +129,10 @@ private fun ItemBox(
 ) {
     ElevatedCard(
         colors = CardDefaults.cardColors(Color.White),
-        modifier = Modifier.padding(16.dp),
+        modifier = modifier.padding(16.dp),
     ) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .padding(8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start,
@@ -146,14 +145,14 @@ private fun ItemBox(
             )
 
             Text(
-                modifier = modifier.padding(top = 8.dp),
+                modifier = Modifier.padding(top = 8.dp),
                 text = stringResource(projectDesc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
             )
 
             TextButton(
-                modifier = modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
                     .padding(top = 20.dp),
                 onClick = {
                     navController.navigate(navRoute)

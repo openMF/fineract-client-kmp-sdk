@@ -1,4 +1,6 @@
-Fixes #issue_number
+Fixes - [Jira-#Issue_Number](https://mifosforge.jira.com/browse/MXCSDK-)
+
+Didn't create a Jira ticket, click [here](https://mifosforge.jira.com/jira/software/c/projects/MXCSDK/issues) to create new.
 
 **Description**
 Include a summary of the change and which issue is fixed. List any dependencies that are required for this change.
