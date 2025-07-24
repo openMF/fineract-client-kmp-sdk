@@ -50,8 +50,8 @@ import org.mifos.screen.component.MifosScaffoldTopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
-    navController: NavHostController,
     modifier: Modifier = Modifier,
+    navController: NavHostController,
     apiViewModel: ApiViewModel = koinViewModel(),
 ) {
     val projectData by apiViewModel.projectDataState.collectAsState()

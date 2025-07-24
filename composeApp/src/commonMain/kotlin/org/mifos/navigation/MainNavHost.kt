@@ -26,13 +26,14 @@ internal fun MainNavHost(
     val navController = rememberNavController()
 
     NavHost(
+        modifier = modifier,
         navController = navController,
         startDestination = NavGraphRoute.HOME_SCREEN,
     ) {
         composable(
             route = NavGraphRoute.HOME_SCREEN,
         ) {
-            HomeScreen(navController, modifier)
+            HomeScreen(navController = navController)
         }
 
         composable(
