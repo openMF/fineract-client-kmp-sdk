@@ -22,4 +22,11 @@
     <!--Api's Name-->
     <string name="authentication_api_name">Authentication API</string>
     <string name="center_api_name">Center API</string>
+
+    <!-- Request name -->
+    <string name="get">GET</string>
+    <string name="post">POST</string>
+    <string name="put">PUT</string>
+    <string name="delete">DEL</string>
+
 </resources>

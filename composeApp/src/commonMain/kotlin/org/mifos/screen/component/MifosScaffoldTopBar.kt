@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,20 +36,29 @@ fun MifosScaffoldTopBar(
     navigationIconShow: Boolean = false,
     navController: NavHostController? = null,
     title: String,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
+    contentColor: Color = contentColorFor(containerColor),
     content: @Composable (PaddingValues) -> Unit = {},
 ) {
     Scaffold(
+        containerColor = containerColor,
+        contentColor = contentColor,
         modifier = modifier,
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(Color.White),
-
+                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.primary),
                 navigationIcon = {
                     if (navigationIconShow) {
-                        IconButton(onClick = {
-                            navController?.popBackStack()
-                        }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        IconButton(
+                            onClick = {
+                                navController?.popBackStack()
+                            },
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                            )
                         }
                     }
                 },
@@ -57,6 +67,7 @@ fun MifosScaffoldTopBar(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimary,
                     )
                 },
             )

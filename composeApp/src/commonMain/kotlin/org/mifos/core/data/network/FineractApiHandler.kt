@@ -13,6 +13,10 @@ import kotlinx.serialization.json.Json
 import org.mifos.core.common.Result
 import org.mifos.core.common.safeCall
 import org.mifos.fineract.client.models.PostAuthenticationRequest
+import org.mifos.fineract.client.models.PostCentersCenterIdRequest
+import org.mifos.fineract.client.models.PostCentersRequest
+import org.mifos.fineract.client.models.PutCentersCenterIdRequest
+import org.mifos.model.MifosFieldOfficerOperationName
 import org.mifos.utils.FineractApiProvider
 
 /**
@@ -58,12 +62,52 @@ abstract class BaseFineractApiHandler<RequestType>(
  * Request DTOs for different API operations (simple data classes)
  */
 data class AuthRequest(val username: String, val password: String)
-data class ClientRequest(val clientId: Long)
-data class SavingsRequest(val accountId: Long)
-data class LoanRequest(val loanId: Long)
-data class CenterRequest(val centerId: Long)
-data class SurveyRequest(val surveyId: Long)
-data class NoteRequest(val resourceType: String, val resourceId: Long, val noteId: Long)
+data class CenterRetrieveGroupAccountRequest(val centerId: Long)
+data class CenterRetrieveOne14Request(
+    val one14CenterId: Long,
+    val staffInSelectedOfficeOnly: Boolean,
+)
+
+data class CenterRetrieveAll23Request(
+    val officeId: Long?,
+    val staffId: Long?,
+    val externalId: String?,
+    val name: String?,
+    val underHierarchy: String?,
+    val paged: Boolean?,
+    val offset: Int?,
+    val limit: Int?,
+    val orderBy: String?,
+    val sortOrder: String?,
+    val meetingDate: String?,
+    val dateFormat: String?,
+    val locale: String?,
+)
+
+data class CenterRetrieveTemplate6Request(
+    val template6OfficeID: Long?,
+    val staffInSelectedOfficeOnly: Boolean,
+    val command: String,
+)
+
+data class CenterCreate7Request(
+    val postCentersRequest: PostCentersRequest,
+)
+
+data class CenterActivate2Request(
+    val centerId: Long,
+    val command: String? = null,
+    val postCentersCenterIdRequest: PostCentersCenterIdRequest,
+)
+
+data class CenterUpdate12Request(
+    val centerId: Long,
+    val name: String,
+)
+
+data class CenterDelete11Request(
+    val centerId: Long,
+)
 
 /**
  * Authentication API Handler
@@ -72,7 +116,7 @@ class AuthApiHandler(
     fineractApiProvider: FineractApiProvider,
 ) : BaseFineractApiHandler<AuthRequest>(fineractApiProvider) {
 
-    override val handlerId: String = "auth"
+    override val handlerId: String = MifosFieldOfficerOperationName.AUTHENTICATION
 
     override suspend fun executeApi(request: AuthRequest): Any {
         val authRequest = PostAuthenticationRequest(request.username, request.password)
@@ -82,92 +126,146 @@ class AuthApiHandler(
 }
 
 /**
- * Client API Handler
+ * Center API Handler : GET Retrieve Group Account
  */
-class ClientApiHandler(
+class CenterRetrieveGroupAccountApiHandler(
     fineractApiProvider: FineractApiProvider,
-) : BaseFineractApiHandler<ClientRequest>(fineractApiProvider) {
+) : BaseFineractApiHandler<CenterRetrieveGroupAccountRequest>(fineractApiProvider) {
 
-    override val handlerId: String = "client"
+    override val handlerId: String = MifosFieldOfficerOperationName.CENTER_RETRIEVE_GROUP_ACCOUNT
 
-    override suspend fun executeApi(request: ClientRequest): Any {
-        return fineractApiProvider.baseApiManager.getClient()
-            .clients.retrieveOne11(request.clientId, true)
+    override suspend fun executeApi(request: CenterRetrieveGroupAccountRequest): Any {
+        return fineractApiProvider.baseApiManager.getClient().centers.retrieveGroupAccount(request.centerId)
     }
 }
 
 /**
- * Savings API Handler
+ * Center API Handler : GET Retrieve One 14
  */
-class SavingsApiHandler(
+class CenterRetrieveOne14ApiHandler(
     fineractApiProvider: FineractApiProvider,
-) : BaseFineractApiHandler<SavingsRequest>(fineractApiProvider) {
+) : BaseFineractApiHandler<CenterRetrieveOne14Request>(fineractApiProvider) {
 
-    override val handlerId: String = "savings"
+    override val handlerId: String = MifosFieldOfficerOperationName.CENTER_RETRIEVE_ONE_14
 
-    override suspend fun executeApi(request: SavingsRequest): Any {
-        return fineractApiProvider.baseApiManager.getClient()
-            .savingsAccounts.retrieveOne25(request.accountId)
+    override suspend fun executeApi(request: CenterRetrieveOne14Request): Any {
+        return fineractApiProvider.baseApiManager.getClient().centers.retrieveOne14(
+            request.one14CenterId,
+            request.staffInSelectedOfficeOnly,
+        )
     }
 }
 
 /**
- * Loan API Handler
+ * Center API Handler : GET Retrieve All 23
  */
-class LoanApiHandler(
+class CenterRetrieveAll23ApiHandler(
     fineractApiProvider: FineractApiProvider,
-) : BaseFineractApiHandler<LoanRequest>(fineractApiProvider) {
+) : BaseFineractApiHandler<CenterRetrieveAll23Request>(fineractApiProvider) {
 
-    override val handlerId: String = "loans"
+    override val handlerId: String = MifosFieldOfficerOperationName.CENTER_RETRIEVE_ALL_23
 
-    override suspend fun executeApi(request: LoanRequest): Any {
-        return fineractApiProvider.baseApiManager.getClient()
-            .loans.retrieveAll27("mifos") // Using default parameter for demo
+    override suspend fun executeApi(request: CenterRetrieveAll23Request): Any {
+        return fineractApiProvider.baseApiManager.getClient().centers.retrieveAll23(
+            request.officeId,
+            request.staffId,
+            request.externalId,
+            request.name,
+            request.underHierarchy,
+            request.paged,
+            request.offset,
+            request.limit,
+            request.orderBy,
+            request.sortOrder,
+            request.meetingDate,
+            request.dateFormat,
+            request.locale,
+        )
     }
 }
 
 /**
- * Center API Handler
+ * Center API Handler : GET Retrieve Template6
  */
-class CenterApiHandler(
+class CenterRetrieveTemplate6ApiHandler(
     fineractApiProvider: FineractApiProvider,
-) : BaseFineractApiHandler<CenterRequest>(fineractApiProvider) {
+) : BaseFineractApiHandler<CenterRetrieveTemplate6Request>(fineractApiProvider) {
 
-    override val handlerId: String = "centers"
+    override val handlerId: String = MifosFieldOfficerOperationName.CENTER_RETRIEVE_TEMPLATE_6
 
-    override suspend fun executeApi(request: CenterRequest): Any {
-        return fineractApiProvider.baseApiManager.getClient()
-            .centers.retrieveOne14(request.centerId, false)
+    override suspend fun executeApi(request: CenterRetrieveTemplate6Request): Any {
+        return fineractApiProvider.baseApiManager.getClient().centers.retrieveTemplate6(
+            request.command,
+            request.template6OfficeID,
+            request.staffInSelectedOfficeOnly,
+        )
     }
 }
 
 /**
- * Survey API Handler
+ * Center API Handler : POST Create7
  */
-class SurveyApiHandler(
+class CenterCreate7ApiHandler(
     fineractApiProvider: FineractApiProvider,
-) : BaseFineractApiHandler<SurveyRequest>(fineractApiProvider) {
+) : BaseFineractApiHandler<CenterCreate7Request>(fineractApiProvider) {
 
-    override val handlerId: String = "surveys"
+    override val handlerId: String = MifosFieldOfficerOperationName.CENTER_CREATE_7
 
-    override suspend fun executeApi(request: SurveyRequest): Any {
-        return fineractApiProvider.baseApiManager.getClient()
-            .spmSurveys.findSurvey(request.surveyId)
+    override suspend fun executeApi(request: CenterCreate7Request): Any {
+        return fineractApiProvider.baseApiManager.getClient().centers.create7(
+            request.postCentersRequest,
+        )
     }
 }
 
 /**
- * Note API Handler
+ * Center API Handler : POST Activate2
  */
-class NoteApiHandler(
+class CenterActivate2ApiHandler(
     fineractApiProvider: FineractApiProvider,
-) : BaseFineractApiHandler<NoteRequest>(fineractApiProvider) {
+) : BaseFineractApiHandler<CenterActivate2Request>(fineractApiProvider) {
 
-    override val handlerId: String = "notes"
+    override val handlerId: String = MifosFieldOfficerOperationName.CENTER_ACTIVATE_2
 
-    override suspend fun executeApi(request: NoteRequest): Any {
-        return fineractApiProvider.baseApiManager.getClient()
-            .notes.retrieveNote(request.resourceType, request.resourceId, request.noteId)
+    override suspend fun executeApi(request: CenterActivate2Request): Any {
+        return fineractApiProvider.baseApiManager.getClient().centers.activate2(
+            request.centerId,
+            request.postCentersCenterIdRequest,
+            request.command,
+        )
+    }
+}
+
+/**
+ * Center API Handler : PUT Update 12
+ */
+class CenterUpdate12ApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<CenterUpdate12Request>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CENTER_UPDATE_12
+
+    override suspend fun executeApi(request: CenterUpdate12Request): Any {
+        return fineractApiProvider.baseApiManager.getClient().centers.update12(
+            request.centerId,
+            PutCentersCenterIdRequest(request.name),
+        )
+    }
+}
+
+/**
+ * Center API Handler : PUT Delete 11
+ */
+class CenterDelete11ApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<CenterDelete11Request>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CENTER_DELETE_11
+
+    override suspend fun executeApi(request: CenterDelete11Request): Any {
+        return fineractApiProvider.baseApiManager.getClient().centers.delete11(
+            request.centerId,
+        )
     }
 }
 
@@ -181,13 +279,39 @@ class FineractApiHandlerFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <RequestType> createHandler(handlerType: String): ApiHandler<RequestType>? {
         return when (handlerType) {
-            "auth" -> AuthApiHandler(fineractApiProvider) as? ApiHandler<RequestType>
-            "client" -> ClientApiHandler(fineractApiProvider) as? ApiHandler<RequestType>
-            "savings" -> SavingsApiHandler(fineractApiProvider) as? ApiHandler<RequestType>
-            "loans" -> LoanApiHandler(fineractApiProvider) as? ApiHandler<RequestType>
-            "centers" -> CenterApiHandler(fineractApiProvider) as? ApiHandler<RequestType>
-            "surveys" -> SurveyApiHandler(fineractApiProvider) as? ApiHandler<RequestType>
-            "notes" -> NoteApiHandler(fineractApiProvider) as? ApiHandler<RequestType>
+            MifosFieldOfficerOperationName.AUTHENTICATION -> AuthApiHandler(fineractApiProvider) as? ApiHandler<RequestType>
+            MifosFieldOfficerOperationName.CENTER_RETRIEVE_GROUP_ACCOUNT -> CenterRetrieveGroupAccountApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CENTER_RETRIEVE_ONE_14 -> CenterRetrieveOne14ApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CENTER_RETRIEVE_ALL_23 -> CenterRetrieveAll23ApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CENTER_RETRIEVE_TEMPLATE_6 -> CenterRetrieveTemplate6ApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CENTER_CREATE_7 -> CenterCreate7ApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CENTER_ACTIVATE_2 -> CenterActivate2ApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CENTER_UPDATE_12 -> CenterUpdate12ApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CENTER_DELETE_11 -> CenterDelete11ApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
             else -> null
         }
     }
