@@ -11,6 +11,7 @@ package org.mifos.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,7 +54,7 @@ internal fun ApiResponse(
             modifier = modifier,
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp).verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
@@ -116,6 +117,7 @@ internal fun ApiResponse(
 
                 TextButton(
                     modifier = Modifier.size(width = 70.dp, height = 30.dp),
+                    contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.textButtonColors(MaterialTheme.colorScheme.primary),
                     onClick = if (uiState.error != null) {
                         onClearError

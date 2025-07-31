@@ -26,13 +26,18 @@ import org.mifos.core.common.JsonFormatter
 import org.mifos.core.common.Result
 import org.mifos.core.data.network.ApiService
 import org.mifos.core.data.network.AuthRequest
-import org.mifos.core.data.network.CenterRequest
-import org.mifos.core.data.network.ClientRequest
-import org.mifos.core.data.network.LoanRequest
-import org.mifos.core.data.network.NoteRequest
-import org.mifos.core.data.network.SavingsRequest
-import org.mifos.core.data.network.SurveyRequest
+import org.mifos.core.data.network.CenterActivate2Request
+import org.mifos.core.data.network.CenterCreate7Request
+import org.mifos.core.data.network.CenterDelete11Request
+import org.mifos.core.data.network.CenterRetrieveAll23Request
+import org.mifos.core.data.network.CenterRetrieveGroupAccountRequest
+import org.mifos.core.data.network.CenterRetrieveOne14Request
+import org.mifos.core.data.network.CenterRetrieveTemplate6Request
+import org.mifos.core.data.network.CenterUpdate12Request
+import org.mifos.fineract.client.models.PostCentersCenterIdRequest
+import org.mifos.fineract.client.models.PostCentersRequest
 import org.mifos.model.MifosFieldOfficerApiName
+import org.mifos.model.MifosFieldOfficerOperationName
 import org.mifos.model.ProjectDetails
 import org.mifos.navigation.NavGraphRoute
 
@@ -43,7 +48,6 @@ import org.mifos.navigation.NavGraphRoute
 internal class ApiViewModel(
     private val apiService: ApiService,
 ) : ViewModel() {
-
     private val _projectDataState = MutableStateFlow(projectDetailData())
     val projectDataState = _projectDataState.asStateFlow()
 
@@ -56,14 +60,43 @@ internal class ApiViewModel(
     fun onAction(action: ApiAction) {
         when (action) {
             is ApiAction.Authenticate -> authenticate(action.username, action.password)
-            is ApiAction.GetClient -> getClient(action.clientId)
-            is ApiAction.GetSavingsAccount -> getSavingsAccount(action.accountId)
-            is ApiAction.GetLoans -> getLoans(action.loanId)
-            is ApiAction.GetCenter -> getCenter(action.centerId)
-            is ApiAction.GetSurvey -> getSurvey(action.surveyId)
-            is ApiAction.GetNote -> getNote(action.resourceType, action.resourceId, action.noteId)
+            is ApiAction.GetCenterRetrieveGroupAccount -> getCenterRetrieveGroupAccount(action.centerId)
             is ApiAction.ClearError -> clearError()
             is ApiAction.ClearResponse -> clearResponse()
+            is ApiAction.GetCenterRetrieveOne14 -> getCenterRetrieveOne14(
+                action.one14CenterId,
+                action.staffInSelectedOfficeOnly,
+            )
+            is ApiAction.GetCenterRetrieveTemplate6 -> getCenterRetrieveTemplate6(
+                action.template6OfficeID,
+                action.staffInSelectedOfficeOnly,
+                action.command,
+            )
+            is ApiAction.GetCenterRetrieveAll23 -> getCenterRetrieveAll23(
+                action.officeId,
+                action.staffId,
+                action.externalId,
+                action.name,
+                action.underHierarchy,
+                action.paged,
+                action.offset,
+                action.limit,
+                action.orderBy,
+                action.sortOrder,
+                action.meetingDate,
+                action.dateFormat,
+                action.locale,
+            )
+            is ApiAction.PostCenterCreate7 -> postCenterCreate7(
+                action.postCentersRequest,
+            )
+            is ApiAction.PostCenterActivate2 -> postCenterActivate2(
+                action.centerId,
+                action.command,
+                action.postCentersCenterIdRequest,
+            )
+            is ApiAction.PostCenterUpdate12 -> postCenterUpdate12(action.centerId, action.name)
+            is ApiAction.PostCenterDelete11 -> postCenterDelete11(action.centerId)
         }
     }
 
@@ -71,66 +104,148 @@ internal class ApiViewModel(
      * Authenticate user
      */
     fun authenticate(username: String, password: String) {
-        executeApiCall("auth", AuthRequest(username, password), "Authentication")
+        executeApiCall(
+            MifosFieldOfficerOperationName.AUTHENTICATION,
+            AuthRequest(username, password),
+        )
     }
 
     /**
-     * Get client information
+     * Center API : GET Retrieve Group Account
      */
-    fun getClient(clientId: Long) {
-        executeApiCall("client", ClientRequest(clientId), "Get Client")
+    fun getCenterRetrieveGroupAccount(centerId: Long) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CENTER_RETRIEVE_GROUP_ACCOUNT,
+            CenterRetrieveGroupAccountRequest(centerId),
+        )
     }
 
     /**
-     * Get savings account information
+     * Center API : GET Retrieve One 14
      */
-    fun getSavingsAccount(accountId: Long) {
-        executeApiCall("savings", SavingsRequest(accountId), "Get Savings Account")
+    fun getCenterRetrieveOne14(one14CenterId: Long, staffInSelectedOfficeOnly: Boolean) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CENTER_RETRIEVE_ONE_14,
+            CenterRetrieveOne14Request(one14CenterId, staffInSelectedOfficeOnly),
+        )
     }
 
     /**
-     * Get loan information
+     * Center API : GET Retrieve One 14
      */
-    fun getLoans(loanId: Long) {
-        executeApiCall("loans", LoanRequest(loanId), "Get Loans")
+    fun getCenterRetrieveAll23(
+        officeId: Long?,
+        staffId: Long?,
+        externalId: String?,
+        name: String?,
+        underHierarchy: String?,
+        paged: Boolean?,
+        offset: Int?,
+        limit: Int?,
+        orderBy: String?,
+        sortOrder: String?,
+        meetingDate: String?,
+        dateFormat: String?,
+        locale: String?,
+    ) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CENTER_RETRIEVE_ALL_23,
+            CenterRetrieveAll23Request(
+                officeId,
+                staffId,
+                externalId,
+                name,
+                underHierarchy,
+                paged,
+                offset,
+                limit,
+                orderBy,
+                sortOrder,
+                meetingDate,
+                dateFormat,
+                locale,
+            ),
+        )
     }
 
     /**
-     * Get center information
+     * Center API : GET Retrieve Template6
      */
-    fun getCenter(centerId: Long) {
-        executeApiCall("centers", CenterRequest(centerId), "Get Center")
+    fun getCenterRetrieveTemplate6(
+        template6OfficeID: Long?,
+        staffInSelectedOfficeOnly: Boolean,
+        command: String,
+    ) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CENTER_RETRIEVE_TEMPLATE_6,
+            CenterRetrieveTemplate6Request(template6OfficeID, staffInSelectedOfficeOnly, command),
+        )
     }
 
     /**
-     * Get survey information
+     * Center API : POST Create 7
      */
-    fun getSurvey(surveyId: Long) {
-        executeApiCall("surveys", SurveyRequest(surveyId), "Get Survey")
+    fun postCenterCreate7(
+        postCentersRequest: PostCentersRequest,
+    ) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CENTER_CREATE_7,
+            CenterCreate7Request(postCentersRequest),
+        )
     }
 
     /**
-     * Get note information
+     * Center API : POST Activate 2
      */
-    fun getNote(resourceType: String, resourceId: Long, noteId: Long) {
-        executeApiCall("notes", NoteRequest(resourceType, resourceId, noteId), "Get Note")
+    fun postCenterActivate2(
+        centerId: Long,
+        command: String? = null,
+        postCentersCenterIdRequest: PostCentersCenterIdRequest,
+    ) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CENTER_ACTIVATE_2,
+            CenterActivate2Request(centerId, command, postCentersCenterIdRequest),
+        )
+    }
+
+    /**
+     * Center API : PUT Update 12
+     */
+    fun postCenterUpdate12(
+        centerId: Long,
+        name: String,
+    ) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CENTER_UPDATE_12,
+            CenterUpdate12Request(centerId, name),
+        )
+    }
+
+    /**
+     * Center API : DELETE Delete 11
+     */
+    private fun postCenterDelete11(centerId: Long) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CENTER_DELETE_11,
+            CenterDelete11Request(centerId),
+        )
     }
 
     /**
      * Generic method to execute API calls using the handler framework
      */
-    private fun <T> executeApiCall(handlerType: String, request: T, operationName: String) {
+    private fun <T> executeApiCall(handlerTypeAndOperationName: String, request: T) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
-                isLoading = true,
+                isLoading = handlerTypeAndOperationName,
                 error = null,
-                lastOperation = operationName,
+                lastOperation = handlerTypeAndOperationName,
             )
 
-            when (val result = apiService.execute(handlerType, request)) {
+            when (val result = apiService.execute(handlerTypeAndOperationName, request)) {
                 is Result.Success -> {
                     _uiState.value = _uiState.value.copy(
-                        isLoading = false,
+                        isLoading = null,
                         jsonResponse = JsonFormatter.format(result.data),
                         error = null,
                     )
@@ -138,7 +253,7 @@ internal class ApiViewModel(
 
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        isLoading = false,
+                        isLoading = null,
                         error = result.exception.message ?: "Unknown error occurred",
                     )
                 }
@@ -172,7 +287,7 @@ internal class ApiViewModel(
  * UI State for API operations - simple and focused
  */
 internal data class ApiUiState(
-    val isLoading: Boolean = false,
+    val isLoading: String? = null,
     val jsonResponse: String = "",
     val error: String? = null,
     val lastOperation: String = "",
@@ -180,26 +295,80 @@ internal data class ApiUiState(
 
 internal sealed interface ApiAction {
     data class Authenticate(val username: String, val password: String) : ApiAction
-    data class GetClient(val clientId: Long) : ApiAction
-    data class GetSavingsAccount(val accountId: Long) : ApiAction
-    data class GetLoans(val loanId: Long) : ApiAction
-    data class GetCenter(val centerId: Long) : ApiAction
-    data class GetSurvey(val surveyId: Long) : ApiAction
-    data class GetNote(val resourceType: String, val resourceId: Long, val noteId: Long) : ApiAction
+    data class GetCenterRetrieveGroupAccount(val centerId: Long) : ApiAction
+    data class GetCenterRetrieveOne14(
+        val one14CenterId: Long,
+        val staffInSelectedOfficeOnly: Boolean,
+    ) : ApiAction
+
+    data class GetCenterRetrieveAll23(
+        val officeId: Long?,
+        val staffId: Long?,
+        val externalId: String?,
+        val name: String?,
+        val underHierarchy: String?,
+        val paged: Boolean?,
+        val offset: Int?,
+        val limit: Int?,
+        val orderBy: String?,
+        val sortOrder: String?,
+        val meetingDate: String?,
+        val dateFormat: String?,
+        val locale: String?,
+    ) : ApiAction
+
+    data class GetCenterRetrieveTemplate6(
+        val template6OfficeID: Long?,
+        val staffInSelectedOfficeOnly: Boolean,
+        val command: String,
+    ) : ApiAction
+
+    data class PostCenterCreate7(
+        val postCentersRequest: PostCentersRequest,
+    ) : ApiAction
+
+    data class PostCenterActivate2(
+        val centerId: Long,
+        val command: String? = null,
+        val postCentersCenterIdRequest: PostCentersCenterIdRequest,
+    ) : ApiAction
+
+    data class PostCenterUpdate12(
+        val centerId: Long,
+        val name: String,
+    ) : ApiAction
+
+    data class PostCenterDelete11(
+        val centerId: Long,
+    ) : ApiAction
+
     data object ClearError : ApiAction
     data object ClearResponse : ApiAction
 }
 
 private fun projectDetailData(): List<ProjectDetails> {
     return listOf(
-        ProjectDetails(Res.string.field_officer_name, Res.string.field_officer_desc, NavGraphRoute.MIFOS_FIELD_OPERATION),
-        ProjectDetails(Res.string.mifos_mobile_name, Res.string.mifos_mobile_desc, NavGraphRoute.MIFOS_MOBILE),
-        ProjectDetails(Res.string.mifos_pay_name, Res.string.mifos_pay_desc, NavGraphRoute.MIFOS_PAY),
+        ProjectDetails(
+            Res.string.field_officer_name,
+            Res.string.field_officer_desc,
+            NavGraphRoute.MIFOS_FIELD_OPERATION,
+        ),
+        ProjectDetails(
+            Res.string.mifos_mobile_name,
+            Res.string.mifos_mobile_desc,
+            NavGraphRoute.MIFOS_MOBILE,
+        ),
+        ProjectDetails(
+            Res.string.mifos_pay_name,
+            Res.string.mifos_pay_desc,
+            NavGraphRoute.MIFOS_PAY,
+        ),
     )
 }
 
 private fun mifosFieldOfficerApiName(): List<MifosFieldOfficerApiName> {
     return listOf(
         MifosFieldOfficerApiName.AUTHENTICATION,
+        MifosFieldOfficerApiName.CENTER,
     )
 }

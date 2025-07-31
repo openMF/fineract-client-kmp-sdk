@@ -11,13 +11,9 @@ package org.mifos.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -30,7 +26,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +37,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.mifos.presentation.ApiViewModel
 import org.mifos.screen.component.MifosScaffoldTopBar
+import org.mifos.screen.component.MifosVerticalStaggeredGrid
 
 /**
  * Simplified API Call Screen using the unified ApiHandler framework
@@ -77,40 +73,21 @@ internal fun HomeScreen(
                     text = "Test Different Projects API",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
 
-                BoxWithConstraints(
-                    modifier = Modifier.fillMaxWidth(1f),
-                    contentAlignment = Alignment.Center,
+                MifosVerticalStaggeredGrid(
+                    maxColumns = 3,
+                    minColumns = 1,
                 ) {
-                    val isCompact = maxWidth < 600.dp
-
-                    if (isCompact) {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(1),
-                        ) {
-                            items(projectData) { it ->
-                                ItemBox(
-                                    projectName = it.projectName,
-                                    projectDesc = it.projectDesc,
-                                    navRoute = it.navRoute,
-                                    navController = navController,
-                                )
-                            }
-                        }
-                    } else {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(3),
-                        ) {
-                            items(projectData) { it ->
-                                ItemBox(
-                                    projectName = it.projectName,
-                                    projectDesc = it.projectDesc,
-                                    navRoute = it.navRoute,
-                                    navController = navController,
-                                )
-                            }
+                    projectData.forEach {
+                        item {
+                            ItemBox(
+                                projectName = it.projectName,
+                                projectDesc = it.projectDesc,
+                                navRoute = it.navRoute,
+                                navController = navController,
+                            )
                         }
                     }
                 }
@@ -128,8 +105,9 @@ private fun ItemBox(
     navController: NavHostController,
 ) {
     ElevatedCard(
-        colors = CardDefaults.cardColors(Color.White),
-        modifier = modifier.padding(16.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+        modifier = modifier.padding(vertical = 10.dp, horizontal = 16.dp),
+        elevation = CardDefaults.elevatedCardElevation(5.dp),
     ) {
         Column(
             modifier = Modifier
@@ -141,14 +119,14 @@ private fun ItemBox(
                 text = stringResource(projectName),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             Text(
                 modifier = Modifier.padding(top = 8.dp),
                 text = stringResource(projectDesc),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             TextButton(
@@ -162,7 +140,7 @@ private fun ItemBox(
                 Text(
                     text = "Click Here",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.background,
+                    color = MaterialTheme.colorScheme.onPrimary,
                 )
             }
         }
