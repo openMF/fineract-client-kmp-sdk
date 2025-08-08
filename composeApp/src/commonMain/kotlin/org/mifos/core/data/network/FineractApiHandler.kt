@@ -15,7 +15,9 @@ import org.mifos.core.common.safeCall
 import org.mifos.fineract.client.models.PostAuthenticationRequest
 import org.mifos.fineract.client.models.PostCentersCenterIdRequest
 import org.mifos.fineract.client.models.PostCentersRequest
+import org.mifos.fineract.client.models.PostChargesRequest
 import org.mifos.fineract.client.models.PutCentersCenterIdRequest
+import org.mifos.fineract.client.models.PutChargesChargeIdRequest
 import org.mifos.model.MifosFieldOfficerOperationName
 import org.mifos.utils.FineractApiProvider
 
@@ -107,6 +109,23 @@ data class CenterUpdate12Request(
 
 data class CenterDelete11Request(
     val centerId: Long,
+)
+
+data class ChargeRetrieveRequest(
+    val chargeId: Long,
+)
+
+data class ChargeCreateRequest(
+    val postChargesRequest: PostChargesRequest,
+)
+
+data class ChargeUpdateRequest(
+    val chargeId: Long,
+    val putChargesChargeIdRequest: PutChargesChargeIdRequest,
+)
+
+data class ChargeDeleteRequest(
+    val chargeId: Long,
 )
 
 /**
@@ -270,6 +289,95 @@ class CenterDelete11ApiHandler(
 }
 
 /**
+ * Charge API Handler : GET Retrieve Charge
+ */
+class ChargeRetrieveChargesApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<ChargeRetrieveRequest>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHARGE_RETRIEVE_CHARGES
+
+    override suspend fun executeApi(request: ChargeRetrieveRequest): Any {
+        return fineractApiProvider.baseApiManager.getClient().charges.retrieveCharge(request.chargeId)
+    }
+}
+
+/**
+ * Charge API Handler : GET Retrieve All Charges
+ */
+class ChargeRetrieveAllApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<Unit>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHARGE_RETRIEVE_ALL
+
+    override suspend fun executeApi(request: Unit): Any {
+        return fineractApiProvider.baseApiManager.getClient()
+            .charges.retrieveAllCharges()
+    }
+}
+
+/**
+ * Charge API Handler : GET Retrieve New Charge Details (Template)
+ */
+class ChargeRetrieveTemplateApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<Unit>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHARGE_RETRIEVE_TEMPLATE
+
+    override suspend fun executeApi(request: Unit): Any {
+        return fineractApiProvider.baseApiManager.getClient()
+            .charges.retrieveNewChargeDetails()
+    }
+}
+
+/**
+ * Charge API Handler : POST Create Charge
+ */
+class ChargeCreateApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<ChargeCreateRequest>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHARGE_CREATE
+
+    override suspend fun executeApi(request: ChargeCreateRequest): Any {
+        return fineractApiProvider.baseApiManager.getClient()
+            .charges.createCharge(request.postChargesRequest)
+    }
+}
+
+/**
+ * Charge API Handler : PUT Update Charge
+ */
+class ChargeUpdateApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<ChargeUpdateRequest>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHARGE_UPDATE
+
+    override suspend fun executeApi(request: ChargeUpdateRequest): Any {
+        return fineractApiProvider.baseApiManager.getClient()
+            .charges.updateCharge(request.chargeId, request.putChargesChargeIdRequest)
+    }
+}
+
+/**
+ * Charge API Handler : DELETE Delete Charge
+ */
+class ChargeDeleteApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<ChargeDeleteRequest>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHARGE_DELETE
+
+    override suspend fun executeApi(request: ChargeDeleteRequest): Any {
+        return fineractApiProvider.baseApiManager.getClient()
+            .charges.deleteCharge(request.chargeId)
+    }
+}
+
+/**
  * Factory for creating Fineract API handlers
  */
 class FineractApiHandlerFactory(
@@ -309,6 +417,30 @@ class FineractApiHandlerFactory(
             ) as? ApiHandler<RequestType>
 
             MifosFieldOfficerOperationName.CENTER_DELETE_11 -> CenterDelete11ApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHARGE_RETRIEVE_CHARGES -> ChargeRetrieveChargesApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHARGE_RETRIEVE_ALL -> ChargeRetrieveAllApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHARGE_RETRIEVE_TEMPLATE -> ChargeRetrieveTemplateApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHARGE_CREATE -> ChargeCreateApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHARGE_UPDATE -> ChargeUpdateApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHARGE_DELETE -> ChargeDeleteApiHandler(
                 fineractApiProvider,
             ) as? ApiHandler<RequestType>
 

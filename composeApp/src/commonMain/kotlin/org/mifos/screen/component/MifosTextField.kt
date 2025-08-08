@@ -28,7 +28,7 @@ fun MifosTextField(
     labelTextStyle: TextStyle = MaterialTheme.typography.bodySmall,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     keyboardType: KeyboardType? = null,
-    field: TextFieldItem = TextFieldItem("", "", {}),
+    field: TextFieldItem = TextFieldItem("label empty", "value empty", {}),
 ) {
     OutlinedTextField(
         value = value ?: field.value,

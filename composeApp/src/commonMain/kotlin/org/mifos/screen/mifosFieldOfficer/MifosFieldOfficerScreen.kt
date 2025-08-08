@@ -55,6 +55,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.mifos.fineract.client.models.PostCentersCenterIdRequest
 import org.mifos.fineract.client.models.PostCentersRequest
+import org.mifos.fineract.client.models.PostChargesRequest
+import org.mifos.fineract.client.models.PutChargesChargeIdRequest
 import org.mifos.model.MifosFieldOfficerApiName
 import org.mifos.model.MifosFieldOfficerOperationName
 import org.mifos.presentation.ApiAction
@@ -146,6 +148,11 @@ internal fun MifosFieldOfficerScreen(
                                     )
 
                                     MifosFieldOfficerApiName.CENTER -> CenterAPI(
+                                        uiState = uiState,
+                                        onAction = apiViewModel::onAction,
+                                    )
+
+                                    MifosFieldOfficerApiName.CHARGE -> ChargeAPI(
                                         uiState = uiState,
                                         onAction = apiViewModel::onAction,
                                     )
@@ -614,7 +621,7 @@ private fun CenterAPI(
                 enable = centerIdUpdate12.isNotBlank() && nameUpdate12.isNotBlank(),
                 onClick = {
                     onAction(
-                        ApiAction.PostCenterUpdate12(
+                        ApiAction.PutCenterUpdate12(
                             centerIdUpdate12.toLong(),
                             nameUpdate12,
                         ),
@@ -652,7 +659,7 @@ private fun CenterAPI(
                 enable = centerIdDelete11.isNotBlank(),
                 onClick = {
                     onAction(
-                        ApiAction.PostCenterDelete11(
+                        ApiAction.CenterDelete11(
                             centerIdDelete11.toLong(),
                         ),
                     )
@@ -665,6 +672,278 @@ private fun CenterAPI(
                     keyboardType = KeyboardType.Number,
                 )
             }
+        }
+    }
+}
+
+/**
+Center API
+ */
+@Composable
+private fun ChargeAPI(
+    modifier: Modifier = Modifier,
+    uiState: ApiUiState,
+    onAction: (ApiAction) -> Unit,
+) {
+    var createAmount by remember { mutableStateOf<Double?>(null) }
+    var createChargeAppliesTo by remember { mutableStateOf<Int?>(null) }
+    var createChargeCalculationType by remember { mutableStateOf<Int?>(null) }
+    var createChargePaymentMode by remember { mutableStateOf<Int?>(null) }
+    var createChargeTimeType by remember { mutableStateOf<Int?>(null) }
+    var createCurrencyCode by remember { mutableStateOf<String?>(null) }
+    var createLocale by remember { mutableStateOf<String?>(null) }
+    var createMonthDayFormat by remember { mutableStateOf<String?>(null) }
+    var createName by remember { mutableStateOf<String?>(null) }
+    var createPenalty by remember { mutableStateOf(false) }
+    var createActive by remember { mutableStateOf(false) }
+
+    var updateName by remember { mutableStateOf<String?>(null) }
+    var updateChargeId by remember { mutableStateOf("0") }
+
+    var deleteChargeId by remember { mutableStateOf("0") }
+
+    var retrieveChargeId by remember { mutableStateOf("0") }
+
+    MifosVerticalStaggeredGrid(
+        minColumns = 1,
+        maxColumns = 3,
+        modifier = modifier.padding(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalItemSpacing = 10.dp,
+    ) {
+        /**
+         Charge API : Retrieve All
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHARGE_RETRIEVE_CHARGES,
+                requestType = stringResource(Res.string.get),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHARGE_RETRIEVE_CHARGES,
+                enable = retrieveChargeId.isNotBlank(),
+                onClick = {
+                    onAction(
+                        ApiAction.GetChargeRetrieve(retrieveChargeId.toLong()),
+                    )
+                },
+                inputContent = {
+                    MifosTextField(
+                        value = retrieveChargeId,
+                        onValueChange = { retrieveChargeId = it },
+                        label = "Charge Id *",
+                        keyboardType = KeyboardType.Number,
+                    )
+                },
+            )
+        }
+
+        /**
+         * Charge API : Retrieve All
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHARGE_RETRIEVE_ALL,
+                requestType = stringResource(Res.string.get),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHARGE_RETRIEVE_ALL,
+                onClick = {
+                    onAction(
+                        ApiAction.GetChargeRetrieveAll,
+                    )
+                },
+                inputContent = {},
+            )
+        }
+
+        /**
+         * Charge API : Retrieve Template
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHARGE_RETRIEVE_TEMPLATE,
+                requestType = stringResource(Res.string.get),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHARGE_RETRIEVE_TEMPLATE,
+                onClick = {
+                    onAction(
+                        ApiAction.GetChargeRetrieveTemplate,
+                    )
+                },
+                inputContent = {},
+            )
+        }
+
+        /**
+         * Charge API : Create
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHARGE_CREATE,
+                requestType = stringResource(Res.string.post),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHARGE_CREATE,
+                onClick = {
+                    onAction(
+                        ApiAction.PostChargeCreate(
+                            postChargesRequest = PostChargesRequest(
+                                active = createActive,
+                                amount = createAmount,
+                                chargeAppliesTo = createChargeAppliesTo,
+                                chargeCalculationType = createChargeCalculationType,
+                                chargePaymentMode = createChargePaymentMode,
+                                chargeTimeType = createChargeTimeType,
+                                currencyCode = createCurrencyCode,
+                                locale = createLocale,
+                                monthDayFormat = createMonthDayFormat,
+                                name = createName,
+                                penalty = createPenalty,
+                            ),
+                        ),
+                    )
+                },
+            ) {
+                val fieldItems = listOf(
+                    TextFieldItem(
+                        "Name",
+                        createName ?: "",
+                        { createName = it },
+                    ),
+                    TextFieldItem(
+                        "Amount",
+                        createAmount?.toString() ?: "",
+                        { createAmount = it.toDoubleOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Charge Applies To",
+                        createChargeAppliesTo?.toString() ?: "",
+                        { createChargeAppliesTo = it.toIntOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Charge Calculation Type",
+                        createChargeCalculationType?.toString() ?: "",
+                        { createChargeCalculationType = it.toIntOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Charge Payment Mode",
+                        createChargePaymentMode?.toString() ?: "",
+                        { createChargePaymentMode = it.toIntOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Charge Time Type",
+                        createChargeTimeType?.toString() ?: "",
+                        { createChargeTimeType = it.toIntOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Currency Code",
+                        createCurrencyCode ?: "",
+                        { createCurrencyCode = it },
+                    ),
+                    TextFieldItem(
+                        "Locale",
+                        createLocale ?: "",
+                        { createLocale = it },
+                    ),
+                    TextFieldItem(
+                        "Month Day Format",
+                        createMonthDayFormat ?: "",
+                        { createMonthDayFormat = it },
+                    ),
+                )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    MifosVerticalStaggeredGrid {
+                        items(fieldItems) {
+                            MifosTextField(field = it)
+                        }
+                    }
+
+                    MifosCheckBox(
+                        text = "Active",
+                        checked = createActive,
+                        onCheckChanged = { createActive = it },
+                    )
+                    MifosCheckBox(
+                        text = "Penalty",
+                        checked = createPenalty,
+                        onCheckChanged = { createPenalty = it },
+                    )
+                }
+            }
+        }
+
+        /**
+         * Charge API : Update
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHARGE_UPDATE,
+                requestType = stringResource(Res.string.put),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHARGE_UPDATE,
+                enable = updateChargeId.isNotBlank(),
+                onClick = {
+                    onAction(
+                        ApiAction.PutChargeUpdate(
+                            chargeId = 0L,
+                            putChargesChargeIdRequest = PutChargesChargeIdRequest(),
+                        ),
+                    )
+                },
+                inputContent = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        MifosVerticalStaggeredGrid {
+                            item {
+                                MifosTextField(
+                                    value = updateChargeId,
+                                    onValueChange = { updateChargeId = it },
+                                    label = "Charge Id *",
+                                    keyboardType = KeyboardType.Number,
+                                )
+                            }
+
+                            item {
+                                MifosTextField(
+                                    value = updateName ?: "",
+                                    onValueChange = { updateName = it },
+                                    label = "Name *",
+                                )
+                            }
+                        }
+                    }
+                },
+            )
+        }
+
+        /**
+         * Charge API : Delete
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHARGE_DELETE,
+                requestType = stringResource(Res.string.delete),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHARGE_DELETE,
+                enable = deleteChargeId.isNotBlank(),
+                onClick = {
+                    onAction(
+                        ApiAction.ChargeDelete(
+                            deleteChargeId.toLong(),
+                        ),
+                    )
+                },
+                inputContent = {
+                    MifosTextField(
+                        value = deleteChargeId,
+                        onValueChange = { deleteChargeId = it },
+                        label = "Charge Id *",
+                        keyboardType = KeyboardType.Number,
+                    )
+                },
+            )
         }
     }
 }
