@@ -22,6 +22,7 @@
     <!--Api's Name-->
     <string name="authentication_api_name">Authentication API</string>
     <string name="center_api_name">Center API</string>
+    <string name="charge_api_name">Charge API</string>
 
     <!-- Request name -->
     <string name="get">GET</string>

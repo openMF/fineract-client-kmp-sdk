@@ -34,8 +34,14 @@ import org.mifos.core.data.network.CenterRetrieveGroupAccountRequest
 import org.mifos.core.data.network.CenterRetrieveOne14Request
 import org.mifos.core.data.network.CenterRetrieveTemplate6Request
 import org.mifos.core.data.network.CenterUpdate12Request
+import org.mifos.core.data.network.ChargeCreateRequest
+import org.mifos.core.data.network.ChargeDeleteRequest
+import org.mifos.core.data.network.ChargeRetrieveRequest
+import org.mifos.core.data.network.ChargeUpdateRequest
 import org.mifos.fineract.client.models.PostCentersCenterIdRequest
 import org.mifos.fineract.client.models.PostCentersRequest
+import org.mifos.fineract.client.models.PostChargesRequest
+import org.mifos.fineract.client.models.PutChargesChargeIdRequest
 import org.mifos.model.MifosFieldOfficerApiName
 import org.mifos.model.MifosFieldOfficerOperationName
 import org.mifos.model.ProjectDetails
@@ -95,8 +101,14 @@ internal class ApiViewModel(
                 action.command,
                 action.postCentersCenterIdRequest,
             )
-            is ApiAction.PostCenterUpdate12 -> postCenterUpdate12(action.centerId, action.name)
-            is ApiAction.PostCenterDelete11 -> postCenterDelete11(action.centerId)
+            is ApiAction.PutCenterUpdate12 -> postCenterUpdate12(action.centerId, action.name)
+            is ApiAction.CenterDelete11 -> postCenterDelete11(action.centerId)
+            is ApiAction.GetChargeRetrieve -> getChargeRetrieve(action.chargeId)
+            is ApiAction.GetChargeRetrieveAll -> getChargeRetrieveAll()
+            is ApiAction.GetChargeRetrieveTemplate -> getChargeRetrieveTemplate()
+            is ApiAction.PostChargeCreate -> postChargeCreate(action.postChargesRequest)
+            is ApiAction.PutChargeUpdate -> putChargeUpdate(action.chargeId, action.putChargesChargeIdRequest)
+            is ApiAction.ChargeDelete -> chargeDelete(action.chargeId)
         }
     }
 
@@ -232,6 +244,69 @@ internal class ApiViewModel(
     }
 
     /**
+     * Charge API : GET Retrieve Charge
+     */
+    private fun getChargeRetrieve(chargeId: Long) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHARGE_RETRIEVE_CHARGES,
+            ChargeRetrieveRequest(chargeId),
+        )
+    }
+
+    /**
+     * Charge API : GET Retrieve All
+     */
+    private fun getChargeRetrieveAll() {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHARGE_RETRIEVE_ALL,
+            null,
+        )
+    }
+
+    /**
+     * Charge API : GET Retrieve Template
+     */
+    private fun getChargeRetrieveTemplate() {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHARGE_RETRIEVE_TEMPLATE,
+            null,
+        )
+    }
+
+    /**
+     * Charge API : POST Create
+     */
+    private fun postChargeCreate(postChargesRequest: PostChargesRequest) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHARGE_CREATE,
+            ChargeCreateRequest(postChargesRequest),
+        )
+    }
+
+    /**
+     * Charge API : PUT Update
+     */
+    private fun putChargeUpdate(
+        chargeId: Long,
+        putChargesChargeIdRequest: PutChargesChargeIdRequest,
+    ) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHARGE_UPDATE,
+            ChargeUpdateRequest(chargeId, putChargesChargeIdRequest),
+        )
+    }
+
+    /**
+     * Charge API : DELETE Charge
+     */
+    private fun chargeDelete(chargeId: Long) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHARGE_DELETE,
+            ChargeDeleteRequest(chargeId),
+        )
+    }
+
+    /**
      * Generic method to execute API calls using the handler framework
      */
     private fun <T> executeApiCall(handlerTypeAndOperationName: String, request: T) {
@@ -333,13 +408,34 @@ internal sealed interface ApiAction {
         val postCentersCenterIdRequest: PostCentersCenterIdRequest,
     ) : ApiAction
 
-    data class PostCenterUpdate12(
+    data class PutCenterUpdate12(
         val centerId: Long,
         val name: String,
     ) : ApiAction
 
-    data class PostCenterDelete11(
+    data class CenterDelete11(
         val centerId: Long,
+    ) : ApiAction
+
+    data class GetChargeRetrieve(
+        val chargeId: Long,
+    ) : ApiAction
+
+    data object GetChargeRetrieveAll : ApiAction
+
+    data object GetChargeRetrieveTemplate : ApiAction
+
+    data class PostChargeCreate(
+        val postChargesRequest: PostChargesRequest,
+    ) : ApiAction
+
+    data class PutChargeUpdate(
+        val chargeId: Long,
+        val putChargesChargeIdRequest: PutChargesChargeIdRequest,
+    ) : ApiAction
+
+    data class ChargeDelete(
+        val chargeId: Long,
     ) : ApiAction
 
     data object ClearError : ApiAction
@@ -370,5 +466,6 @@ private fun mifosFieldOfficerApiName(): List<MifosFieldOfficerApiName> {
     return listOf(
         MifosFieldOfficerApiName.AUTHENTICATION,
         MifosFieldOfficerApiName.CENTER,
+        MifosFieldOfficerApiName.CHARGE,
     )
 }
