@@ -141,18 +141,23 @@ internal fun MifosFieldOfficerScreen(
                                     thickness = 0.5.dp,
                                     color = MaterialTheme.colorScheme.outlineVariant,
                                 )
-                                when (it) {
-                                    MifosFieldOfficerApiName.AUTHENTICATION -> AuthAPI(
+                                when (it.apiName) {
+                                    MifosFieldOfficerApiName.AUTHENTICATION.apiName -> AuthAPI(
                                         uiState = uiState,
                                         onAction = apiViewModel::onAction,
                                     )
 
-                                    MifosFieldOfficerApiName.CENTER -> CenterAPI(
+                                    MifosFieldOfficerApiName.CENTER.apiName -> CenterAPI(
                                         uiState = uiState,
                                         onAction = apiViewModel::onAction,
                                     )
 
-                                    MifosFieldOfficerApiName.CHARGE -> ChargeAPI(
+                                    MifosFieldOfficerApiName.CHARGE.apiName -> ChargeAPI(
+                                        uiState = uiState,
+                                        onAction = apiViewModel::onAction,
+                                    )
+
+                                    MifosFieldOfficerApiName.CHECKER_INBOX.apiName -> CheckerInboxAPI(
                                         uiState = uiState,
                                         onAction = apiViewModel::onAction,
                                     )
@@ -940,6 +945,223 @@ private fun ChargeAPI(
                         value = deleteChargeId,
                         onValueChange = { deleteChargeId = it },
                         label = "Charge Id *",
+                        keyboardType = KeyboardType.Number,
+                    )
+                },
+            )
+        }
+    }
+}
+
+/**
+Checker Inbox API
+ */
+@Composable
+private fun CheckerInboxAPI(
+    modifier: Modifier = Modifier,
+    uiState: ApiUiState,
+    onAction: (ApiAction) -> Unit,
+) {
+    var commandActionName by remember { mutableStateOf<String?>(null) }
+    var commandEntityName by remember { mutableStateOf<String?>(null) }
+    var commandResourceId by remember { mutableStateOf<Long?>(null) }
+    var commandMakerId by remember { mutableStateOf<Long?>(null) }
+    var commandMakerDateTimeFrom by remember { mutableStateOf<String?>(null) }
+    var commandMakerDateTimeTo by remember { mutableStateOf<String?>(null) }
+    var commandOfficeId by remember { mutableStateOf<Int?>(null) }
+    var commandGroupId by remember { mutableStateOf<Int?>(null) }
+    var commandClientId by remember { mutableStateOf<Int?>(null) }
+    var commandLoanId by remember { mutableStateOf<Int?>(null) }
+    var commandSavingsAccountId by remember { mutableStateOf<Int?>(null) }
+
+    var approveAuditId by remember { mutableStateOf("0") }
+    var approveCommand by remember { mutableStateOf<String?>(null) }
+
+    var deleteAuditId by remember { mutableStateOf("0") }
+
+    MifosVerticalStaggeredGrid(
+        minColumns = 1,
+        maxColumns = 3,
+        modifier = modifier.padding(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalItemSpacing = 10.dp,
+    ) {
+        /**
+         Checker Inbox API : Retrieve All
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHECKER_RETRIEVE_AUDIT_SEARCH,
+                requestType = stringResource(Res.string.get),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHECKER_RETRIEVE_AUDIT_SEARCH,
+                onClick = {
+                    onAction(
+                        ApiAction.GetCheckerRetrieveAuditSearch,
+                    )
+                },
+                inputContent = {},
+            )
+        }
+
+        /**
+         Checker Inbox API : Command
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHECKER_RETRIEVE_COMMAND,
+                requestType = stringResource(Res.string.get),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHECKER_RETRIEVE_COMMAND,
+                onClick = {
+                    onAction(
+                        ApiAction.GetCheckerRetrieveCommands(
+                            commandActionName,
+                            commandEntityName,
+                            commandResourceId,
+                            commandMakerId,
+                            commandMakerDateTimeFrom,
+                            commandMakerDateTimeTo,
+                            commandOfficeId,
+                            commandGroupId,
+                            commandClientId,
+                            commandLoanId,
+                            commandSavingsAccountId,
+                        ),
+                    )
+                },
+            ) {
+                val fieldItem = listOf(
+                    TextFieldItem(
+                        "Action Name",
+                        commandActionName ?: "",
+                        { commandActionName = it },
+                    ),
+                    TextFieldItem(
+                        "Entity Name",
+                        commandEntityName ?: "",
+                        { commandEntityName = it },
+                    ),
+                    TextFieldItem(
+                        "Resource Id",
+                        commandResourceId?.toString() ?: "",
+                        { commandResourceId = it.toLongOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Maker Id",
+                        commandMakerId?.toString() ?: "",
+                        { commandMakerId = it.toLongOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Maker Date From",
+                        commandMakerDateTimeFrom ?: "",
+                        { commandMakerDateTimeFrom = it },
+                    ),
+                    TextFieldItem(
+                        "Maker Date To",
+                        commandMakerDateTimeTo ?: "",
+                        { commandMakerDateTimeTo = it },
+                    ),
+                    TextFieldItem(
+                        "Office Id",
+                        commandOfficeId?.toString() ?: "",
+                        { commandOfficeId = it.toIntOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Group Id",
+                        commandGroupId?.toString() ?: "",
+                        { commandGroupId = it.toIntOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Client Id",
+                        commandClientId?.toString() ?: "",
+                        { commandClientId = it.toIntOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Loan Id",
+                        commandLoanId?.toString() ?: "",
+                        { commandLoanId = it.toIntOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                    TextFieldItem(
+                        "Savings Account Id",
+                        commandSavingsAccountId?.toString() ?: "",
+                        { commandSavingsAccountId = it.toIntOrNull() },
+                        keyboardType = KeyboardType.Number,
+                    ),
+                )
+
+                MifosVerticalStaggeredGrid {
+                    items(fieldItem) {
+                        MifosTextField(field = it)
+                    }
+                }
+            }
+        }
+
+        /**
+         Checker Inbox API : Approve Maker Checker
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHECKER_APPROVE_MAKER_CHECKER,
+                requestType = stringResource(Res.string.post),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHECKER_APPROVE_MAKER_CHECKER,
+                enable = approveAuditId.isNotBlank(),
+                onClick = {
+                    onAction(
+                        ApiAction.PostCheckerApproveMakerChecker(
+                            approveAuditId.toLong(),
+                            approveCommand,
+                        ),
+                    )
+                },
+                inputContent = {
+                    MifosVerticalStaggeredGrid {
+                        item {
+                            MifosTextField(
+                                value = approveAuditId,
+                                onValueChange = { approveAuditId = it },
+                                label = "Audit Id *",
+                                keyboardType = KeyboardType.Number,
+                            )
+                        }
+                        item {
+                            MifosTextField(
+                                value = approveCommand ?: "",
+                                onValueChange = { approveCommand = it },
+                                label = "Command",
+                            )
+                        }
+                    }
+                },
+            )
+        }
+
+        /**
+         Checker Inbox API : Delete Maker Checker
+         */
+        item {
+            MifosCard(
+                apiRequestName = MifosFieldOfficerOperationName.CHECKER_DELETE_MAKER_CHECKER,
+                requestType = stringResource(Res.string.delete),
+                isLoading = uiState.isLoading == MifosFieldOfficerOperationName.CHECKER_DELETE_MAKER_CHECKER,
+                enable = deleteAuditId.isNotBlank(),
+                onClick = {
+                    onAction(
+                        ApiAction.CheckerDeleteMakerChecker(
+                            deleteAuditId.toLong(),
+                        ),
+                    )
+                },
+                inputContent = {
+                    MifosTextField(
+                        value = deleteAuditId,
+                        onValueChange = { deleteAuditId = it },
+                        label = "Audit Id *",
                         keyboardType = KeyboardType.Number,
                     )
                 },

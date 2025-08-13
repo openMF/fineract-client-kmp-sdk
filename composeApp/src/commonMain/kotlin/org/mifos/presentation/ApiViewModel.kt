@@ -38,6 +38,9 @@ import org.mifos.core.data.network.ChargeCreateRequest
 import org.mifos.core.data.network.ChargeDeleteRequest
 import org.mifos.core.data.network.ChargeRetrieveRequest
 import org.mifos.core.data.network.ChargeUpdateRequest
+import org.mifos.core.data.network.CheckerApproveMakerCheckerRequest
+import org.mifos.core.data.network.CheckerDeleteMakerCheckerRequest
+import org.mifos.core.data.network.CheckerRetrieveCommandsRequest
 import org.mifos.fineract.client.models.PostCentersCenterIdRequest
 import org.mifos.fineract.client.models.PostCentersRequest
 import org.mifos.fineract.client.models.PostChargesRequest
@@ -57,7 +60,7 @@ internal class ApiViewModel(
     private val _projectDataState = MutableStateFlow(projectDetailData())
     val projectDataState = _projectDataState.asStateFlow()
 
-    private val _mifosFieldOfficerApiNameState = MutableStateFlow(mifosFieldOfficerApiName())
+    private val _mifosFieldOfficerApiNameState = MutableStateFlow(MifosFieldOfficerApiName.entries)
     val mifosFieldOfficerApiNameState = _mifosFieldOfficerApiNameState.asStateFlow()
 
     private val _uiState = MutableStateFlow(ApiUiState())
@@ -73,11 +76,13 @@ internal class ApiViewModel(
                 action.one14CenterId,
                 action.staffInSelectedOfficeOnly,
             )
+
             is ApiAction.GetCenterRetrieveTemplate6 -> getCenterRetrieveTemplate6(
                 action.template6OfficeID,
                 action.staffInSelectedOfficeOnly,
                 action.command,
             )
+
             is ApiAction.GetCenterRetrieveAll23 -> getCenterRetrieveAll23(
                 action.officeId,
                 action.staffId,
@@ -93,22 +98,49 @@ internal class ApiViewModel(
                 action.dateFormat,
                 action.locale,
             )
+
             is ApiAction.PostCenterCreate7 -> postCenterCreate7(
                 action.postCentersRequest,
             )
+
             is ApiAction.PostCenterActivate2 -> postCenterActivate2(
                 action.centerId,
                 action.command,
                 action.postCentersCenterIdRequest,
             )
+
             is ApiAction.PutCenterUpdate12 -> postCenterUpdate12(action.centerId, action.name)
             is ApiAction.CenterDelete11 -> postCenterDelete11(action.centerId)
             is ApiAction.GetChargeRetrieve -> getChargeRetrieve(action.chargeId)
             is ApiAction.GetChargeRetrieveAll -> getChargeRetrieveAll()
             is ApiAction.GetChargeRetrieveTemplate -> getChargeRetrieveTemplate()
             is ApiAction.PostChargeCreate -> postChargeCreate(action.postChargesRequest)
-            is ApiAction.PutChargeUpdate -> putChargeUpdate(action.chargeId, action.putChargesChargeIdRequest)
+            is ApiAction.PutChargeUpdate -> putChargeUpdate(
+                action.chargeId,
+                action.putChargesChargeIdRequest,
+            )
+
             is ApiAction.ChargeDelete -> chargeDelete(action.chargeId)
+            is ApiAction.CheckerDeleteMakerChecker -> deleteCheckerMakerChecker(action.auditId)
+            is ApiAction.GetCheckerRetrieveAuditSearch -> getCheckerRetrieveAuditSearch()
+            is ApiAction.GetCheckerRetrieveCommands -> getCheckerRetrieveCommands(
+                action.actionName,
+                action.entityName,
+                action.resourceId,
+                action.makerId,
+                action.makerDateTimeFrom,
+                action.makerDateTimeTo,
+                action.officeId,
+                action.groupId,
+                action.clientId,
+                action.loanId,
+                action.savingsAccountId,
+            )
+
+            is ApiAction.PostCheckerApproveMakerChecker -> postCheckerApproveMakerChecker(
+                action.auditId,
+                action.command,
+            )
         }
     }
 
@@ -307,6 +339,75 @@ internal class ApiViewModel(
     }
 
     /**
+     * MakerChecker API : GET Retrieve Audit Search Template
+     */
+    private fun getCheckerRetrieveAuditSearch() {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHECKER_RETRIEVE_AUDIT_SEARCH,
+            Unit,
+        )
+    }
+
+    /**
+     * MakerChecker API : GET Retrieve Commands
+     */
+    private fun getCheckerRetrieveCommands(
+        actionName: String?,
+        entityName: String?,
+        resourceId: Long?,
+        makerId: Long?,
+        makerDateTimeFrom: String?,
+        makerDateTimeTo: String?,
+        officeId: Int?,
+        groupId: Int?,
+        clientId: Int?,
+        loanId: Int?,
+        savingsAccountId: Int?,
+    ) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHECKER_RETRIEVE_COMMAND,
+            CheckerRetrieveCommandsRequest(
+                actionName,
+                entityName,
+                resourceId,
+                makerId,
+                makerDateTimeFrom,
+                makerDateTimeTo,
+                officeId,
+                groupId,
+                clientId,
+                loanId,
+                savingsAccountId,
+            ),
+        )
+    }
+
+    /**
+     * MakerChecker API : POST Approve MakerChecker Entry
+     */
+    private fun postCheckerApproveMakerChecker(
+        auditId: Long,
+        command: String? = null,
+    ) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHECKER_APPROVE_MAKER_CHECKER,
+            CheckerApproveMakerCheckerRequest(auditId, command),
+        )
+    }
+
+    /**
+     * MakerChecker API : DELETE MakerChecker Entry
+     */
+    private fun deleteCheckerMakerChecker(
+        auditId: Long,
+    ) {
+        executeApiCall(
+            MifosFieldOfficerOperationName.CHECKER_DELETE_MAKER_CHECKER,
+            CheckerDeleteMakerCheckerRequest(auditId),
+        )
+    }
+
+    /**
      * Generic method to execute API calls using the handler framework
      */
     private fun <T> executeApiCall(handlerTypeAndOperationName: String, request: T) {
@@ -438,6 +539,31 @@ internal sealed interface ApiAction {
         val chargeId: Long,
     ) : ApiAction
 
+    object GetCheckerRetrieveAuditSearch : ApiAction
+
+    data class GetCheckerRetrieveCommands(
+        val actionName: String? = null,
+        val entityName: String? = null,
+        val resourceId: Long? = null,
+        val makerId: Long? = null,
+        val makerDateTimeFrom: String? = null,
+        val makerDateTimeTo: String? = null,
+        val officeId: Int? = null,
+        val groupId: Int? = null,
+        val clientId: Int? = null,
+        val loanId: Int? = null,
+        val savingsAccountId: Int? = null,
+    ) : ApiAction
+
+    data class PostCheckerApproveMakerChecker(
+        val auditId: Long,
+        val command: String? = null,
+    ) : ApiAction
+
+    data class CheckerDeleteMakerChecker(
+        val auditId: Long,
+    ) : ApiAction
+
     data object ClearError : ApiAction
     data object ClearResponse : ApiAction
 }
@@ -459,13 +585,5 @@ private fun projectDetailData(): List<ProjectDetails> {
             Res.string.mifos_pay_desc,
             NavGraphRoute.MIFOS_PAY,
         ),
-    )
-}
-
-private fun mifosFieldOfficerApiName(): List<MifosFieldOfficerApiName> {
-    return listOf(
-        MifosFieldOfficerApiName.AUTHENTICATION,
-        MifosFieldOfficerApiName.CENTER,
-        MifosFieldOfficerApiName.CHARGE,
     )
 }
