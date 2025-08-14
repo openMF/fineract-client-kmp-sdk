@@ -13,6 +13,7 @@ import fineract_sdk_cmp.composeapp.generated.resources.Res
 import fineract_sdk_cmp.composeapp.generated.resources.authentication_api_name
 import fineract_sdk_cmp.composeapp.generated.resources.center_api_name
 import fineract_sdk_cmp.composeapp.generated.resources.charge_api_name
+import fineract_sdk_cmp.composeapp.generated.resources.checker_inbox_api_name
 import org.jetbrains.compose.resources.StringResource
 
 enum class MifosFieldOfficerApiName(
@@ -21,4 +22,5 @@ enum class MifosFieldOfficerApiName(
     AUTHENTICATION(Res.string.authentication_api_name),
     CENTER(Res.string.center_api_name),
     CHARGE(Res.string.charge_api_name),
+    CHECKER_INBOX(Res.string.checker_inbox_api_name),
 }

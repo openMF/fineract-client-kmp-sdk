@@ -128,6 +128,29 @@ data class ChargeDeleteRequest(
     val chargeId: Long,
 )
 
+data class CheckerRetrieveCommandsRequest(
+    val actionName: String? = null,
+    val entityName: String? = null,
+    val resourceId: Long? = null,
+    val makerId: Long? = null,
+    val makerDateTimeFrom: String? = null,
+    val makerDateTimeTo: String? = null,
+    val officeId: Int? = null,
+    val groupId: Int? = null,
+    val clientId: Int? = null,
+    val loanId: Int? = null,
+    val savingsAccountId: Int? = null,
+)
+
+data class CheckerApproveMakerCheckerRequest(
+    val auditId: Long,
+    val command: String? = null,
+)
+
+data class CheckerDeleteMakerCheckerRequest(
+    val auditId: Long,
+)
+
 /**
  * Authentication API Handler
  */
@@ -378,6 +401,80 @@ class ChargeDeleteApiHandler(
 }
 
 /**
+ * Maker Checker API Handler : GET Retrieve Audit Search Template
+ */
+class RetrieveAuditSearchTemplateApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<Unit>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHECKER_RETRIEVE_AUDIT_SEARCH
+
+    override suspend fun executeApi(request: Unit): Any {
+        return fineractApiProvider.baseApiManager.getClient()
+            .makerCheckers.retrieveAuditSearchTemplate1()
+    }
+}
+
+/**
+ * Maker Checker API Handler : GET Retrieve Commands
+ */
+class RetrieveCommandsApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<CheckerRetrieveCommandsRequest>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHECKER_RETRIEVE_COMMAND
+
+    override suspend fun executeApi(request: CheckerRetrieveCommandsRequest): Any {
+        return fineractApiProvider.baseApiManager.getClient().makerCheckers.retrieveCommands(
+            actionName = request.actionName,
+            entityName = request.entityName,
+            resourceId = request.resourceId,
+            makerId = request.makerId,
+            makerDateTimeFrom = request.makerDateTimeFrom,
+            makerDateTimeTo = request.makerDateTimeTo,
+            officeId = request.officeId,
+            groupId = request.groupId,
+            clientId = request.clientId,
+            loanid = request.loanId,
+            savingsAccountId = request.savingsAccountId,
+        )
+    }
+}
+
+/**
+ * Maker Checker API Handler : POST Approve Maker Checker Entry
+ */
+class ApproveMakerCheckerEntryApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<CheckerApproveMakerCheckerRequest>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHECKER_APPROVE_MAKER_CHECKER
+
+    override suspend fun executeApi(request: CheckerApproveMakerCheckerRequest): Any {
+        return fineractApiProvider.baseApiManager.getClient()
+            .makerCheckers.approveMakerCheckerEntry(
+                auditId = request.auditId,
+                command = request.command,
+            )
+    }
+}
+
+/**
+ * Maker Checker API Handler : DELETE Maker Checker Entry
+ */
+class DeleteMakerCheckerEntryApiHandler(
+    fineractApiProvider: FineractApiProvider,
+) : BaseFineractApiHandler<CheckerDeleteMakerCheckerRequest>(fineractApiProvider) {
+
+    override val handlerId: String = MifosFieldOfficerOperationName.CHECKER_DELETE_MAKER_CHECKER
+
+    override suspend fun executeApi(request: CheckerDeleteMakerCheckerRequest): Any {
+        return fineractApiProvider.baseApiManager.getClient()
+            .makerCheckers.deleteMakerCheckerEntry(request.auditId)
+    }
+}
+
+/**
  * Factory for creating Fineract API handlers
  */
 class FineractApiHandlerFactory(
@@ -441,6 +538,22 @@ class FineractApiHandlerFactory(
             ) as? ApiHandler<RequestType>
 
             MifosFieldOfficerOperationName.CHARGE_DELETE -> ChargeDeleteApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHECKER_RETRIEVE_COMMAND -> RetrieveCommandsApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHECKER_RETRIEVE_AUDIT_SEARCH -> RetrieveAuditSearchTemplateApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHECKER_APPROVE_MAKER_CHECKER -> ApproveMakerCheckerEntryApiHandler(
+                fineractApiProvider,
+            ) as? ApiHandler<RequestType>
+
+            MifosFieldOfficerOperationName.CHECKER_DELETE_MAKER_CHECKER -> DeleteMakerCheckerEntryApiHandler(
                 fineractApiProvider,
             ) as? ApiHandler<RequestType>
 

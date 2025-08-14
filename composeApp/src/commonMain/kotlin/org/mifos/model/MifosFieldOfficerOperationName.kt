@@ -29,4 +29,10 @@ object MifosFieldOfficerOperationName {
     const val CHARGE_CREATE = "Create"
     const val CHARGE_UPDATE = "Update"
     const val CHARGE_DELETE = "Delete"
+
+    // Checker Inbox API
+    const val CHECKER_RETRIEVE_COMMAND = "Retrieve Command"
+    const val CHECKER_RETRIEVE_AUDIT_SEARCH = "Retrieve Audit Search"
+    const val CHECKER_DELETE_MAKER_CHECKER = "Delete Maker Checker"
+    const val CHECKER_APPROVE_MAKER_CHECKER = "Approve Maker Checker"
 }
